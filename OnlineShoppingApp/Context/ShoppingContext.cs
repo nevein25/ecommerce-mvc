@@ -1,0 +1,88 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using OnlineShoppingApp.Models;
+using System.Reflection.Emit;
+
+namespace OnlineShoppingApp.Context
+{
+    public class ShoppingContext : IdentityDbContext<
+            AppUser,
+            AppRole,
+            int,
+            IdentityUserClaim<int>,
+            AppUserRole,
+            IdentityUserLogin<int>,
+            IdentityRoleClaim<int>,
+            IdentityUserToken<int>
+
+        >
+    {
+        public ShoppingContext(DbContextOptions<ShoppingContext> options) : base(options)
+        {
+        }
+
+
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Buyer> Buyers { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+
+
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            /// Changing the default name for tables
+            builder.Entity<AppUser>(entity => { entity.ToTable(name: "Users"); });
+            builder.Entity<AppRole>(entity => { entity.ToTable(name: "Roles"); });
+            builder.Entity<AppUserRole>(entity => { entity.ToTable("UserRoles"); });
+            builder.Entity<IdentityUserClaim<int>>(entity => { entity.ToTable("UserClaims"); });
+            builder.Entity<IdentityUserLogin<int>>(entity => { entity.ToTable("UserLogins"); });
+            builder.Entity<IdentityUserToken<int>>(entity => { entity.ToTable("UserTokens"); });
+            builder.Entity<IdentityRoleClaim<int>>(entity => { entity.ToTable("RoleClaims"); });
+            ///
+
+            //builder.Entity<IdentityUser<int>>().ToTable("MyUsers");
+            //builder.Entity<IdentityRole<int>>().ToTable("MyRoles");
+            //builder.Entity<IdentityUserRole<int>>().ToTable("MyUserRoles");
+            //builder.Entity<IdentityUserClaim<int>>().ToTable("MyUserClaims");
+            //builder.Entity<IdentityUserLogin<int>>().ToTable("MyUserLogins");
+            //builder.Entity<IdentityUserToken<int>>().ToTable("MyUserTokens");
+            //builder.Entity<IdentityRoleClaim<int>>().ToTable("MyRoleClaims");
+
+
+            /// TPT approach
+            builder.Entity<AppUser>().ToTable("Users");
+            builder.Entity<Admin>().ToTable("Admins");
+            builder.Entity<Seller>().ToTable("Sellers");
+            builder.Entity<Buyer>().ToTable("Buyers");
+            ///
+
+
+            /// [AppUser] * <have> * [AppRole]
+            builder.Entity<AppUserRole>()
+              .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            builder
+                .Entity<AppUser>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            builder
+                .Entity<AppRole>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
+            ///
+
+        }
+    }
+}
