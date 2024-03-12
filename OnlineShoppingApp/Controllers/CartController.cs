@@ -1,89 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OnlineShoppingApp.Repositories.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShoppingApp.Services;
+using OnlineShoppingApp.ViewModels;
+using System.Collections.Generic;
 
 namespace OnlineShoppingApp.Controllers
 {
     public class CartController : Controller
     {
-        public ICartRepo CartRepo { get; set; }
-        public CartController(ICartRepo _cartRepo)
+        private readonly CartService _cartService;
+
+        public CartController(CartService cartService)
         {
-            CartRepo = _cartRepo;
-        }
-        // GET: CartController
-        public ActionResult Index()
-        {
-            return View(CartRepo.GetAll().ToList());
+            _cartService = cartService;
         }
 
-        // GET: CartController/Details/5
-        public ActionResult Details(int id)
+        public IActionResult Index()
         {
-            return View();
-        }
-
-        // GET: CartController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CartController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            // Check if the cart is empty, then add dummy cart items
+            var cartItems = _cartService.GetCartItems();
+            if (cartItems.Count == 0)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                // Dummy data
+                var dummyCartItems = new List<CartItemViewModel>
+                {
+                    new CartItemViewModel { Id = 1, ProductName = "Product 1", Price = 10.0m },
+                    new CartItemViewModel { Id = 2, ProductName = "Product 2", Price = 15.0m }
+                };
 
-        // GET: CartController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+                // Add dummy cart items to the cart
+                foreach (var item in dummyCartItems)
+                {
+                    _cartService.AddToCart(item);
+                }
+            }
 
-        // POST: CartController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            // Get cart items from the service
+            cartItems = _cartService.GetCartItems();
 
-        // GET: CartController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CartController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return View(cartItems);
         }
     }
 }
