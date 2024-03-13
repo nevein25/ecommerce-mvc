@@ -12,7 +12,7 @@ namespace OnlineShoppingApp.Services
     public class CartService:ICartService
     {
         private const string CartKey = "UserCart";
-       // int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        // int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public CartService(IHttpContextAccessor httpContextAccessor)

@@ -2,6 +2,7 @@
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.ViewModels;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace OnlineShoppingApp.Controllers
 {
@@ -16,9 +17,9 @@ namespace OnlineShoppingApp.Controllers
 
         public IActionResult Index()
         {
+            //var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             // Check if the cart is empty, then add dummy cart items
             var cartItems = _cartService.GetCartItems();
-
             // Dummy data
             //var dummyCartItems = new List<CartItemViewModel>
             //{
@@ -27,11 +28,11 @@ namespace OnlineShoppingApp.Controllers
             //};
 
 
-           var item=new CartItemViewModel (){ Id = 2, ProductName = "Product 2", Price = 10.0m,Quantity=3 };
+            var item=new CartItemViewModel (){ Id = 2, ProductName = "Product 2", Price = 10.0m,Quantity=3 };
 
 
-            //_cartService.AddToCart(item);
-            _cartService.UpdateCart(item.Id, item);
+            _cartService.AddToCart(item);
+            //_cartService.UpdateCart(item.Id, item);
 
             // Get cart items from the service
             cartItems = _cartService.GetCartItems();
