@@ -26,10 +26,10 @@ namespace OnlineShoppingApp.Context
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Buyer> Buyers { get; set; }
         public DbSet<Seller> Sellers { get; set; }
-
         public DbSet<Product> Products { get; set; }
-
-
+        public DbSet<Images> Images { get; set; }
+        public DbSet<Category> Categories { get; set; } 
+        public DbSet<Brand> Brands { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -82,6 +82,8 @@ namespace OnlineShoppingApp.Context
                 .IsRequired();
 
             ///
+            builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
+
 
         }
     }

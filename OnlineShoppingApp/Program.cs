@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Classes;
+using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services.Classes;
 using OnlineShoppingApp.Services.Interfaces;
 
@@ -18,6 +20,9 @@ namespace OnlineShoppingApp
             builder.Services.AddDbContext<ShoppingContext>(op =>
                   op.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"))
             );
+            builder.Services.AddScoped<IProductRepo, ProductRepo>();
+            builder.Services.AddScoped<ICategoriesRepo, CategoryRepo>();
+            builder.Services.AddScoped<IBrandRepo, BrandRepo>();
 
             // 2.Adding identity to the container
             builder.Services.AddIdentity<AppUser, AppRole>()

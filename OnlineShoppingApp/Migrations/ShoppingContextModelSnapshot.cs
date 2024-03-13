@@ -235,6 +235,65 @@ namespace OnlineShoppingApp.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("OnlineShoppingApp.Models.Brand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Images", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IsMain")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -254,7 +313,17 @@ namespace OnlineShoppingApp.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("brandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("categoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("brandId");
+
+                    b.HasIndex("categoryId");
 
                     b.ToTable("Products");
                 });
@@ -351,6 +420,36 @@ namespace OnlineShoppingApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("OnlineShoppingApp.Models.Images", b =>
+                {
+                    b.HasOne("OnlineShoppingApp.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
+                {
+                    b.HasOne("OnlineShoppingApp.Models.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("brandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShoppingApp.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("categoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("OnlineShoppingApp.Models.Admin", b =>
                 {
                     b.HasOne("OnlineShoppingApp.Models.AppUser", null)
@@ -386,6 +485,11 @@ namespace OnlineShoppingApp.Migrations
             modelBuilder.Entity("OnlineShoppingApp.Models.AppUser", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
+                {
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }
