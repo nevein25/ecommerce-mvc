@@ -18,21 +18,20 @@ namespace OnlineShoppingApp.Controllers
         {
             // Check if the cart is empty, then add dummy cart items
             var cartItems = _cartService.GetCartItems();
-            if (cartItems.Count == 0)
-            {
-                // Dummy data
-                var dummyCartItems = new List<CartItemViewModel>
-                {
-                    new CartItemViewModel { Id = 1, ProductName = "Product 1", Price = 10.0m },
-                    new CartItemViewModel { Id = 2, ProductName = "Product 2", Price = 15.0m }
-                };
 
-                // Add dummy cart items to the cart
-                foreach (var item in dummyCartItems)
-                {
-                    _cartService.AddToCart(item);
-                }
-            }
+            // Dummy data
+            //var dummyCartItems = new List<CartItemViewModel>
+            //{
+            //    new CartItemViewModel { Id = 1, ProductName = "Product 1", Price = 10.0m },
+            //    new CartItemViewModel { Id = 2, ProductName = "Product 2", Price = 15.0m }
+            //};
+
+
+           var item=new CartItemViewModel (){ Id = 2, ProductName = "Product 2", Price = 10.0m,Quantity=3 };
+
+
+            //_cartService.AddToCart(item);
+            _cartService.UpdateCart(item.Id, item);
 
             // Get cart items from the service
             cartItems = _cartService.GetCartItems();
