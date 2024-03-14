@@ -47,6 +47,8 @@ namespace OnlineShoppingApp
 
 
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IUserRepo, UserRepo>();
+
 
             var app = builder.Build();
 

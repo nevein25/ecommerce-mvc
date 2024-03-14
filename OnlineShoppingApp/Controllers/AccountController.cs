@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using NuGet.Common;
 using OnlineShoppingApp.Common;
 using OnlineShoppingApp.ConfigurationClasses;
+using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services.Interfaces;
 using OnlineShoppingApp.ViewModels;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace OnlineShoppingApp.Controllers
 {
@@ -23,21 +23,28 @@ namespace OnlineShoppingApp.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IEmailService _emailService;
 
+        private IUserRepo _userRepo { get; }
         public AccountController(UserManager<AppUser> userManager,
                                   SignInManager<AppUser> signInManager,
                                   RoleManager<AppRole> roleManager,
-                                  IEmailService emailService)
+                                  IEmailService emailService,
+                                  IUserRepo userRepo)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailService = emailService;
+            _userRepo = userRepo;
         }
 
-        [HttpGet]
+		public IActionResult Test() 
+		{
+            return View("SomethingWentWrong");
+		}
+		[HttpGet]
 
         // Redirect user to google, making url ready
-        public IActionResult GoogleLogin(string returnUrl = null)
+        public IActionResult GoogleLogin(string returnUrl = null) // reviewed
         {
             var redirectUrl = Url.Action(nameof(GoogleLoginCallback), "Account", new { returnUrl });
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
@@ -45,9 +52,8 @@ namespace OnlineShoppingApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GoogleLoginCallback(string returnUrl = null, string remoteError = null)
-        {
-
+        public async Task<IActionResult> GoogleLoginCallback(string returnUrl = null, string remoteError = null) // reviewed
+		{
             if (remoteError != null)
             {
                 return RedirectToAction(nameof(Login));
@@ -106,10 +112,7 @@ namespace OnlineShoppingApp.Controllers
             }
             else
             {
-                ViewBag.ErrorTitle = "Registration successful";
-                ViewBag.ErrorMessage = "Before you can Login, please confirm your " +
-                    "email, by clicking on the confirmation link we have emailed you";
-                return View("ConfirmationError");
+                return View("RegistrationSuccessful");
             }
 
         }
@@ -127,23 +130,24 @@ namespace OnlineShoppingApp.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"The User ID {userId} is invalid";
-                return View("NotFound"); // did not make it yet
+                return View("NotFound"); 
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
-                return View(); // no view yet
-            }
+				return View("EmailConfirmed");
 
-            ViewBag.ErrorTitle = "Email cannot be confirmed";
-            return View("Error");
+			}
+
+            return View("SomethingWentWrong");
         }
+
         [HttpGet]
 
-        public IActionResult Login(string returnUrl = null)
-        {
+        public IActionResult Login(string returnUrl = null) // Reviewed
+		{
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -157,13 +161,35 @@ namespace OnlineShoppingApp.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterUserViewModel model, string returnUrl = null)
-        {
+        [AllowAnonymous] 
+        public async Task<IActionResult> Register(RegisterUserViewModel model, string returnUrl = null)// Reviewed
+		{
             AppUser user = null;
             if (ModelState.IsValid)
             {
+                if (!IsValidEmail(model.Email))
+                {
+                    ModelState.AddModelError("Email", "Please provide a valid email address (e.g., example@example.com)");
+                    return View(model);
+                }
+
+                if (_userRepo.EmailExist(model.Email))
+                {
+                    ModelState.AddModelError("Email", "Email already registered");
+                    return View(model);
+                }
+
+                if (!IsPasswordCompatible(model.Password))
+                {
+                    ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
+                    return View(model);
+                }
+                if (_userRepo.UsernameExist(model.Username))
+                {
+                    ModelState.AddModelError("Username", "Username is taken");
+                    return View(model);
+                }
+
                 if (model.UserType == UserType.Buyer)
                 {
                     user = new Buyer
@@ -185,17 +211,40 @@ namespace OnlineShoppingApp.Controllers
                     };
                 }
 
-                var createResult = await _userManager.CreateAsync(user, model.Password);
-                var roleResult = await _userManager.AddToRoleAsync(user, model.UserType == UserType.Buyer ? "Buyer" : "Seller");
+                await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddToRoleAsync(user, model.UserType == UserType.Buyer ? "Buyer" : "Seller");
 
-                return RedirectToAction("Login", "Account");
+
+                ///
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                var confirmationLink = Url.Action("ConfirmEmail", "Account",
+
+                                new { userId = user.Id, token = token }, Request.Scheme);
+
+                /// sending confirmation mail
+                EmailMessage emailMessage = new EmailMessage
+                {
+                    To = user.Email,
+                    Body = $"<p>Thank you for registering! To activate your account, please click the link below:</p>\r\n <a href='{confirmationLink}'>Activate</a>",
+                    Subject = "Confirm your email"
+                };
+
+                _emailService.SendEmail(emailMessage);
+                ///
+
+
+                ViewBag.RegistrationMessage = "Before you can Login, please confirm your " +
+                    "email, by clicking on the confirmation link we have emailed you";
+
+                return View();
 
             }
 
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost] // Reviewed
         public async Task<IActionResult> Login(LoginUserViewModel UserLoginVM) //normal login
         {
             if (ModelState.IsValid)
@@ -210,23 +259,14 @@ namespace OnlineShoppingApp.Controllers
                     {
                         await _signInManager.SignInAsync(userExist, UserLoginVM.RememberMe);
 
+                        UserHelper.LoggedinUserId = userExist.Id;
+
                         return RedirectToAction("Index", "Home");
                     }
                 }
             }
-
-            ModelState.AddModelError("", "Wrong UserName Or Password");
+            ModelState.AddModelError("LoginError", "Wrong Email Or Password");
             return View(UserLoginVM);
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            // if google
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            // if normal login
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
@@ -239,6 +279,11 @@ namespace OnlineShoppingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(forgotPasswordVM);
+            }
+
             var user = await _userManager.FindByEmailAsync(forgotPasswordVM.Email);
             if (user != null)
             {
@@ -257,12 +302,12 @@ namespace OnlineShoppingApp.Controllers
                 };
 
                 _emailService.SendEmail(emailMessage);
-                ViewBag.message = "Link sent to chnge your password, check your email";
+                ViewBag.message = "Password reset link sent! Please check your email.";
             }
             return View(forgotPasswordVM);
         }
 
-        [HttpGet]
+        [HttpGet] // reviewed
         public IActionResult ResetPassword(string email, string token)
         {
             var model = new ResetPasswordViewModel
@@ -278,8 +323,15 @@ namespace OnlineShoppingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+
             if (ModelState.IsValid)
             {
+                if (!IsPasswordCompatible(model.Password))
+                {
+                    ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
+                    return View(model);
+                }
+
                 var user = await _userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
@@ -298,10 +350,10 @@ namespace OnlineShoppingApp.Controllers
 
                     if (result.Succeeded)
                     {
-
                         await _signInManager.SignInAsync(user, isPersistent: false);
-
+                        return RedirectToAction("Index", "Home");
                     }
+
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
@@ -315,6 +367,31 @@ namespace OnlineShoppingApp.Controllers
             }
 
             return View(model);
+        }
+
+        // REVIEWED
+        public async Task<IActionResult> Logout()
+        {
+
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme); // if google
+            await _signInManager.SignOutAsync(); // if normal login
+            return RedirectToAction("Login", "Account");
+        }
+
+
+        private bool IsPasswordCompatible(string password)
+        {
+            return password.Length >= 6
+                && password.Any(char.IsDigit)
+                && password.Any(char.IsLower)
+                && password.Any(char.IsUpper)
+                && password.Any(c => !char.IsLetterOrDigit(c));
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+            return Regex.IsMatch(email, emailPattern);
         }
     }
 
