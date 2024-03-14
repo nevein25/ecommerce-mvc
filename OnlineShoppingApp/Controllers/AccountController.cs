@@ -39,7 +39,7 @@ namespace OnlineShoppingApp.Controllers
 
 		public IActionResult Test() 
 		{
-            return View("EmailConfirmed");
+            return View("SomethingWentWrong");
 		}
 		[HttpGet]
 
@@ -130,7 +130,7 @@ namespace OnlineShoppingApp.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"The User ID {userId} is invalid";
-                return View("NotFound"); // did not make it yet
+                return View("NotFound"); 
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
