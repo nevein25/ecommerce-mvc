@@ -4,6 +4,7 @@ using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Classes;
 using OnlineShoppingApp.Repositories.Interfaces;
+using OnlineShoppingApp.Services;
 using OnlineShoppingApp.Services.Classes;
 using OnlineShoppingApp.Services.Interfaces;
 
@@ -32,6 +33,9 @@ namespace OnlineShoppingApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+           builder.Services.AddHttpContextAccessor();
+           builder.Services.AddScoped<CartService>();
+
 
             // 3. adding google authentication to the container
             builder.Services.AddAuthentication()
@@ -65,7 +69,7 @@ namespace OnlineShoppingApp
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
         }

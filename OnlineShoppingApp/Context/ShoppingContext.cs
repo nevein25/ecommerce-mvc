@@ -32,6 +32,11 @@ namespace OnlineShoppingApp.Context
         public DbSet<Brand> Brands { get; set; }
 
         public DbSet<ProductSeller> productSellers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -83,6 +88,10 @@ namespace OnlineShoppingApp.Context
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+            builder.Entity<Order>().Property(O => O.SubTotal).HasColumnType("decimal(18,2)");
+            builder.Entity<DeliveryMethod>().Property(D => D.DeliveryCost).HasColumnType("decimal(18,2)");
+            builder.Entity<OrderItem>().Property(I => I.Price).HasColumnType("decimal(18,2)");
+            builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
 
             ///
             builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");

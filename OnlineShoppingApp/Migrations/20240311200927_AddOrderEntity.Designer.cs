@@ -12,8 +12,8 @@ using OnlineShoppingApp.Context;
 namespace OnlineShoppingApp.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20240314003554_AddImageURLSProperty")]
-    partial class AddImageURLSProperty
+    [Migration("20240311200927_AddOrderEntity")]
+    partial class AddOrderEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,6 +111,42 @@ namespace OnlineShoppingApp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BuildingNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BuyerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IsMain")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("OnlineShoppingApp.Models.AppRole", b =>
@@ -238,7 +274,7 @@ namespace OnlineShoppingApp.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("OnlineShoppingApp.Models.Brand", b =>
+            modelBuilder.Entity("OnlineShoppingApp.Models.DeliveryMethod", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,16 +282,26 @@ namespace OnlineShoppingApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<decimal>("DeliveryCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DeliveryTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("DeliveryMethods");
                 });
 
-            modelBuilder.Entity("OnlineShoppingApp.Models.Category", b =>
+            modelBuilder.Entity("OnlineShoppingApp.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -263,16 +309,40 @@ namespace OnlineShoppingApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<int>("BuyerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DeliveryMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("OderDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PaymentIntentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("DeliveryMethodId");
+
+                    b.HasIndex("ShippingAddressId");
+
+                    b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("OnlineShoppingApp.Models.Images", b =>
+            modelBuilder.Entity("OnlineShoppingApp.Models.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,21 +350,25 @@ namespace OnlineShoppingApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IsMain")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderId");
+
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
@@ -316,34 +390,9 @@ namespace OnlineShoppingApp.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("brandId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("categoryId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("brandId");
-
-                    b.HasIndex("categoryId");
-
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("OnlineShoppingApp.Models.ProductSeller", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("productSellers");
                 });
 
             modelBuilder.Entity("OnlineShoppingApp.Models.Admin", b =>
@@ -419,6 +468,17 @@ namespace OnlineShoppingApp.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnlineShoppingApp.Models.Address", b =>
+                {
+                    b.HasOne("OnlineShoppingApp.Models.Buyer", "Buyer")
+                        .WithMany("Addresses")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+                });
+
             modelBuilder.Entity("OnlineShoppingApp.Models.AppUserRole", b =>
                 {
                     b.HasOne("OnlineShoppingApp.Models.AppRole", "Role")
@@ -438,53 +498,44 @@ namespace OnlineShoppingApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("OnlineShoppingApp.Models.Images", b =>
+            modelBuilder.Entity("OnlineShoppingApp.Models.Order", b =>
                 {
+                    b.HasOne("OnlineShoppingApp.Models.Buyer", "Buyer")
+                        .WithMany("Orders")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShoppingApp.Models.DeliveryMethod", "DeliveryMethod")
+                        .WithMany()
+                        .HasForeignKey("DeliveryMethodId");
+
+                    b.HasOne("OnlineShoppingApp.Models.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("DeliveryMethod");
+
+                    b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.OrderItem", b =>
+                {
+                    b.HasOne("OnlineShoppingApp.Models.Order", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("OnlineShoppingApp.Models.Product", "Product")
-                        .WithMany("Images")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
-                {
-                    b.HasOne("OnlineShoppingApp.Models.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("brandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineShoppingApp.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("categoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("OnlineShoppingApp.Models.ProductSeller", b =>
-                {
-                    b.HasOne("OnlineShoppingApp.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineShoppingApp.Models.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnlineShoppingApp.Models.Admin", b =>
@@ -524,9 +575,16 @@ namespace OnlineShoppingApp.Migrations
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("OnlineShoppingApp.Models.Product", b =>
+            modelBuilder.Entity("OnlineShoppingApp.Models.Order", b =>
                 {
-                    b.Navigation("Images");
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.Buyer", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,5 +6,8 @@ namespace OnlineShoppingApp.Models
     {
         [DataType(DataType.Date)]
         public DateOnly? DOB { get; set; }
+
+        public ICollection<Address> Addresses { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
