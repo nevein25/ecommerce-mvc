@@ -25,7 +25,7 @@ namespace OnlineShoppingApp.ViewModels
         public string Password { get; set; }
 
 
-        public UserType UserType { get; set; }
+        public UserType UserType { get; set; } = UserType.Buyer;
         //// For buyers
         //public DateOnly? DOB { get; set; }
 

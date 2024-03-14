@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Classes;
+using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services.Classes;
 using OnlineShoppingApp.Services.Interfaces;
 
@@ -38,6 +40,8 @@ namespace OnlineShoppingApp
 
 
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IUserRepo, UserRepo>();
+
 
             var app = builder.Build();
 
