@@ -2,6 +2,7 @@
 using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
+using System.Runtime.InteropServices;
 
 namespace OnlineShoppingApp.Repositories.Classes
 {
@@ -15,13 +16,13 @@ namespace OnlineShoppingApp.Repositories.Classes
         public List<Product> GetAll()
         {
 
-            return Context.Products.Include(p=>p.Category).Include(p=>p.Brand).ToList();
+            return Context.Products.Include(p=>p.Category).Include(p=>p.Brand).Include(p=>p.Images).ToList();
 
         }
 
         public Product GetById(int id)
         {
-            return Context.Products.Include(p => p.Category).Include(p => p.Brand).FirstOrDefault(p => p.Id == id);
+            return Context.Products.Include(p => p.Category).Include(p => p.Brand).Include(p=>p.Images).FirstOrDefault(p => p.Id == id);
         }
 
         public void Edit(int id, Product newProduct)
@@ -33,52 +34,66 @@ namespace OnlineShoppingApp.Repositories.Classes
             if (oldProd != null)
             {
                 // Update the properties of the existing product with the new values
-                oldProd.Category = newProduct.Category;
-                oldProd.Brand = newProduct.Brand;
+                oldProd.categoryId = newProduct.categoryId;
+                oldProd.brandId = newProduct.brandId;
                 oldProd.Description = newProduct.Description;
                 oldProd.Price = newProduct.Price;
                 oldProd.Name = newProduct.Name;
 
-               
-                foreach (var image in oldProd.Images)
-                {
-                    image.IsMain = 0;
-                }
-
-               
                 if (newProduct.Images != null && newProduct.Images.Any())
                 {
-                   
-                    foreach (var newImage in newProduct.Images)
+                    foreach (var img in oldProd.Images.ToList()) 
                     {
-                        if (newImage!=null)
-                        {
-                            var oldImage = oldProd.Images.FirstOrDefault(i => i.Source == newImage.Source);
-
-
-                            if (oldImage != null)
-                            {
-                                oldImage.IsMain = 1;
-                            }
-
-                        }
-                        
-                        
-                    }
+                        Context.Images.Remove(img);
+                    }      
+                    // Add new images to the product
+                    foreach (var img in newProduct.Images)
+                    {
+                        var image = new Images { Source = img.Source, IsMain = img.IsMain, ProductId = oldProd.Id };
+                    //  oldProd.Images.Add(new Images { Source = img.Source, IsMain = img.IsMain, ProductId = oldProd.Id });
+                        Context.Images.Add(img);
+                    } 
                 }
 
-                
-                Context.SaveChanges();
+                    Context.SaveChanges();
             }
         }
 
 
+
+
+
         public void Insert(Product product)
         {
-            if(product != null)
-            {
+            if (product != null)
+            {     // Add the product to the context
                 Context.Products.Add(product);
+                // Save changes to generate product ID
                 Context.SaveChanges();
+                // Ensure there are image URLs
+                if (product.ImageUrl != null && product.ImageUrl.Any())
+                {
+                    bool isFirstImage = true;
+                    foreach (var imageUrl in product.ImageUrl)
+                    {
+                        // Check if the image URL already exists in the database
+                        var existingImage = Context.Images.FirstOrDefault(i => i.Source == imageUrl && i.ProductId==product.Id);
+                        // If the image URL doesn't exist, add it to the context
+                        if (existingImage == null)
+                        {
+                            var image = new Images { Source = imageUrl, IsMain = 1, ProductId = product.Id };
+                            // Set IsMain based on isFirstImage flag
+                            image.IsMain = isFirstImage ? 1 : 0;
+                            isFirstImage = false;
+
+                            Context.Images.Add(image);
+                        }
+                    }                   
+                    // Save changes to insert images with product ID
+                    Context.SaveChanges();
+
+
+                }
             }
         }
 
@@ -88,5 +103,7 @@ namespace OnlineShoppingApp.Repositories.Classes
             Context.Products.Remove(Context.Products.FirstOrDefault(p=>p.Id==id));
             Context.SaveChanges();
         }
-    }
+
+		
+	}
 }

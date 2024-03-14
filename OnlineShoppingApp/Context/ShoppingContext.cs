@@ -31,6 +31,7 @@ namespace OnlineShoppingApp.Context
         public DbSet<Category> Categories { get; set; } 
         public DbSet<Brand> Brands { get; set; }
 
+        public DbSet<ProductSeller> productSellers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -67,6 +68,8 @@ namespace OnlineShoppingApp.Context
             builder.Entity<AppUserRole>()
               .HasKey(ur => new { ur.UserId, ur.RoleId });
 
+            builder.Entity<ProductSeller>()
+               .HasKey(ps => new { ps.UserId, ps.ProductId });
             builder
                 .Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)

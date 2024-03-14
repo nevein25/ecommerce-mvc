@@ -1,0 +1,90 @@
+﻿@model OnlineShoppingApp.Models.Product
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditProduct" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <!-- Display existing image URLs from ViewBag -->
+            <label class="control-label">Image URLs:</label>
+            <div class="form-group" id="imageUrlsContainer">
+                @foreach (var imageUrl in ViewBag.URLs)
+                {
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" name="ImageUrl" value="@imageUrl" />
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger remove-url">Remove</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- Button to add more image URLs dynamically -->
+            <button type="button" class="btn btn-primary mt-2" id="addImageUrl">Add Image Url</button>
+
+            <!-- Other form fields -->
+            <div class="form-group">
+                <label asp-for="categoryId" class="control-label"></label>
+                <select asp-for="categoryId" class="form-control" asp-items="@ViewBag.Category"></select>
+                <span asp-validation-for="categoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="brandId" class="control-label"></label>
+                <select asp-for="brandId" class="form-control" asp-items="@ViewBag.Brand"></select>
+                <span asp-validation-for="brandId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="GetAllProducts">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Add functionality to add more image URLs
+            $('#addImageUrl').click(function () {
+                var imageUrlInput = '<div class="input-group mb-2">' +
+                    '<input type="text" class="form-control" name="ImageUrl" />' +
+                    '<div class="input-group-append">' +
+                    '<button type="button" class="btn btn-danger remove-url">Remove</button>' +
+                    '</div>' +
+                    '</div>';
+                $('#imageUrlsContainer').append(imageUrlInput);
+            });
+
+            // Add functionality to remove image URLs
+            $(document).on('click', '.remove-url', function () {
+                $(this).closest('.input-group').remove();
+            });
+        });
+    </script>
+}

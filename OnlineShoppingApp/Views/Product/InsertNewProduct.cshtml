@@ -25,6 +25,15 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <div class="form-group"><label class="control-label">Enter Image Url:</label>
+                <div id="imageUrlsContainer">
+                    <div class="input-group mb-2">
+                    <input type="text" class="form-control" name="ImageUrl" />
+                    <div class="input-group-append"><button type="button" class="btn btn-danger remove-url">Remove</button></div>
+                    </div>
+                </div>
+                    <button type="button" class="btn btn-primary mt-2" id="addImageUrl">Add Image Url</button>
+            </div>
             <div class="form-group">
                 <label asp-for="categoryId" class="control-label"></label>
                 <select asp-for="categoryId" class="form-control" asp-items="@ViewBag.category"></select>
@@ -73,6 +82,29 @@
                 }
             });
         });
+
+
+        $(document).ready(function () {     
+            
+            
+            // Add new image URL input field  
+             $('#addImageUrl').click(function () { 
+                 var inputField = '<div class="input-group mb-2">' +         
+                 '<input type="text" class="form-control" name="ImageUrl" />' +     
+                 '<div class="input-group-append">' +                              
+                 '<button type="button" class="btn btn-danger remove-url">Remove</button>' +  
+                 '</div>' +                      
+                 '</div>';        
+                 $('#imageUrlsContainer').append(inputField);     });  
+                 // Remove image URL input field   
+                 $(document).on('click', '.remove-url', function () {  
+                     $(this).closest('.input-group').remove();  
+                 });
+             });
+
     </script>
+
+
+
 }
 

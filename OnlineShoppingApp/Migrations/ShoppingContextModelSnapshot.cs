@@ -328,6 +328,21 @@ namespace OnlineShoppingApp.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("OnlineShoppingApp.Models.ProductSeller", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("productSellers");
+                });
+
             modelBuilder.Entity("OnlineShoppingApp.Models.Admin", b =>
                 {
                     b.HasBaseType("OnlineShoppingApp.Models.AppUser");
@@ -448,6 +463,25 @@ namespace OnlineShoppingApp.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("OnlineShoppingApp.Models.ProductSeller", b =>
+                {
+                    b.HasOne("OnlineShoppingApp.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShoppingApp.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnlineShoppingApp.Models.Admin", b =>

@@ -5,6 +5,10 @@ namespace OnlineShoppingApp.Models
 {
     public class Product
     {
+
+        public Product() { ImageUrl = new List<string>(); }    
+
+
         public int Id { get; set; }
 
         [MaxLength(30)]
@@ -25,7 +29,10 @@ namespace OnlineShoppingApp.Models
         [ForeignKey(nameof(Brand))]
         public int brandId { get; set; }
         public virtual Brand Brand { get; set; }
-        public virtual ICollection<Images> Images { get; set; }
-       
+        public virtual ICollection<Images> Images { get; set; } = new List<Images>();
+
+        [NotMapped]
+        public List<string> ImageUrl { get; set; }
+
     }
 }
