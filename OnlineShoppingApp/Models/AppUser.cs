@@ -19,6 +19,6 @@ namespace OnlineShoppingApp.Models
         // navigation props
         public List<AppUserRole> UserRoles { get; set; }
 
-
-    }
+        public List<Comment> Comments { get; set; }
+	}
 }
