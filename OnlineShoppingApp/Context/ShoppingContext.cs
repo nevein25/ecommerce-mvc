@@ -37,6 +37,10 @@ namespace OnlineShoppingApp.Context
         public DbSet<Address> Addresses { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
+        public DbSet<Rate> Rate { get; set; }
+
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -96,7 +100,19 @@ namespace OnlineShoppingApp.Context
             ///
             builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
 
+			/// [Buyer] * <rate> * [Product]
+			builder.Entity<Rate>().HasKey(p => new { p.ProductId, p.BuyerId });
 
-        }
-    }
+			builder
+				.Entity<Rate>()
+				.HasOne(R => R.Product)
+				.WithMany(R => R.Rates)
+				.HasForeignKey(R => R.ProductId);
+
+			builder
+				.Entity<Rate>()
+				.HasOne(R => R.Buyer);
+			///
+		}
+	}
 }

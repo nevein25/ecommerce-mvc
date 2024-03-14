@@ -34,5 +34,7 @@ namespace OnlineShoppingApp.Models
         [NotMapped]
         public List<string> ImageUrl { get; set; }
 
-    }
+		public List<Rate> Rates { get; set; }
+
+	}
 }
