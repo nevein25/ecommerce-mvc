@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Services.Interfaces;
 using OnlineShoppingApp.ViewModels;
 using System;
@@ -11,10 +12,9 @@ namespace OnlineShoppingApp.Services
 {
     public class CartService:ICartService
     {
-        private const string CartKey = "UserCart";
-        // int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private string CartKey = $"UserCart1";/*{UserHelper.LoggedinUserId}*/
+		// int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+		private readonly IHttpContextAccessor _httpContextAccessor;
         public CartService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -94,5 +94,37 @@ namespace OnlineShoppingApp.Services
             SaveCartItems(existingCart);
 
         }
-    }
+
+		public CartItemViewModel GetCartItem(int id)
+		{
+			var existingCart = GetCartItems();
+
+			// Check if the item already exists in the cart
+			var existingItem = existingCart.FirstOrDefault(item => item.Id == id);
+            
+            return existingItem;
+		}
+
+		public int GetTotal()
+		{
+            var total = 0;
+			var existingCart = GetCartItems();
+
+			foreach(var item in existingCart)
+            {
+                 total += (int) (item.Quantity*item.Price);
+            }
+            return total;
+		}
+
+		public int GetTotalPerProduct(int productId)
+		{
+			var existingCart = GetCartItems();
+
+			// Check if the item already exists in the cart
+			var existingItem = existingCart.FirstOrDefault(item => item.Id == productId);
+            var productTotal = (int)(existingItem.Quantity * existingItem.Price);
+            return productTotal;
+		}
+	}
 }

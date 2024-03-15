@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.ViewModels;
 using System.Collections.Generic;
@@ -9,35 +10,36 @@ namespace OnlineShoppingApp.Controllers
     public class CartController : Controller
     {
         private readonly CartService _cartService;
+        private readonly IProductRepo _ProductRepo;
 
-        public CartController(CartService cartService)
+		public CartController(CartService cartService,IProductRepo productRepo)
         {
             _cartService = cartService;
+            _ProductRepo = productRepo;
         }
 
         public IActionResult Index()
         {
-            //var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            // Check if the cart is empty, then add dummy cart items
-            var cartItems = _cartService.GetCartItems();
-            // Dummy data
-            //var dummyCartItems = new List<CartItemViewModel>
-            //{
-            //    new CartItemViewModel { Id = 1, ProductName = "Product 1", Price = 10.0m },
-            //    new CartItemViewModel { Id = 2, ProductName = "Product 2", Price = 15.0m }
-            //};
-
-
-            var item=new CartItemViewModel (){ Id = 2, ProductName = "Product 2", Price = 10.0m,Quantity=3 };
-
-
-            _cartService.AddToCart(item);
-            //_cartService.UpdateCart(item.Id, item);
-
-            // Get cart items from the service
-            cartItems = _cartService.GetCartItems();
-
-            return View(cartItems);
+            return View(_cartService.GetCartItems());
+        }
+        public IActionResult AddToCart(int id)
+        {
+            var prod = _ProductRepo.GetById(id);
+            if(prod != null)
+            {
+                CartItemViewModel item = new CartItemViewModel()
+                {
+                    Id = id,
+                    ProductName = prod.Name,
+                    PictureUrl = prod.Images.Where(I => I.IsMain == 1).Select(I => I.Source).FirstOrDefault(),
+                    Price = prod.Price,
+                    Brand = prod.Brand.Name,
+                    Category = prod.Category.Name,
+                    Description = prod.Description
+				};
+                _cartService.AddToCart(item);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }
