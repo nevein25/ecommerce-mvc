@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineShoppingApp.Extentions;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Classes;
 using OnlineShoppingApp.Repositories.Interfaces;
 
 namespace OnlineShoppingApp.Controllers
@@ -10,11 +12,16 @@ namespace OnlineShoppingApp.Controllers
         IProductRepo ProductRepo;
         ICategoriesRepo categoriesRepo;
         IBrandRepo brandRepo;
-        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo)
+        IRateRepo _rateRepo { get; }
+
+        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, IRateRepo rateRepo)
         {
             ProductRepo = _productRepo;
             categoriesRepo = _categoriesRepo;
             brandRepo = _brandRepo;
+            _rateRepo = rateRepo;
+
+
         }
 
         public IActionResult GetAllProducts()
@@ -102,30 +109,39 @@ namespace OnlineShoppingApp.Controllers
             return View(product);
         }
 
-  //      public IActionResult DeleteProduct(int id)
-  //      {
+        [HttpPost]
+        public IActionResult RateProduct(int Id, int NumOfStars)
+        {
 
-  //          return View();
-  //      }
+            if (!_rateRepo.ProductExist(Id)) return View("NotFound");
+            _rateRepo.Rate(Id, 2, NumOfStars);
+            return View("GetProduct", ProductRepo.GetById(Id));
+        }
 
-		//[HttpPost]
-		//public IActionResult DeleteProduct(int id)
-		//{
-		//	// Retrieve the product by its id
-		//	var product = ProductRepo.GetById(id);
+        //      public IActionResult DeleteProduct(int id)
+        //      {
 
-		//	// Check if the product exists
-		//	if (product != null)
-		//	{
-		//		// Delete the product from the repository
-		//		ProductRepo.Delete(product);
+        //          return View();
+        //      }
 
-		//		// Redirect to the appropriate view (e.g., a list of all products)
-		//		return RedirectToAction("GetAllProducts");
-		//	}
+        //[HttpPost]
+        //public IActionResult DeleteProduct(int id)
+        //{
+        //	// Retrieve the product by its id
+        //	var product = ProductRepo.GetById(id);
 
-		//	// If the product does not exist, return a not found error or redirect to an error page
-		//	return NotFound();
-		//}
-	}
+        //	// Check if the product exists
+        //	if (product != null)
+        //	{
+        //		// Delete the product from the repository
+        //		ProductRepo.Delete(product);
+
+        //		// Redirect to the appropriate view (e.g., a list of all products)
+        //		return RedirectToAction("GetAllProducts");
+        //	}
+
+        //	// If the product does not exist, return a not found error or redirect to an error page
+        //	return NotFound();
+        //}
+    }
 }
