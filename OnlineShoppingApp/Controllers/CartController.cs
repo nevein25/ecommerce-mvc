@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.ViewModels;
@@ -11,15 +12,18 @@ namespace OnlineShoppingApp.Controllers
     {
         private readonly CartService _cartService;
         private readonly IProductRepo _ProductRepo;
+		private readonly IDeliveryMethodsRepo _deliveryMethod;
 
-		public CartController(CartService cartService,IProductRepo productRepo)
+		public CartController(CartService cartService,IProductRepo productRepo, IDeliveryMethodsRepo deliveryMethod)
         {
             _cartService = cartService;
             _ProductRepo = productRepo;
-        }
+			_deliveryMethod = deliveryMethod;
+		}
 
         public IActionResult Index()
         {
+            ViewBag.DeliveryMethods = _deliveryMethod.GetAll();
             return View(_cartService.GetCartItems());
         }
         public IActionResult AddToCart(int id)
@@ -40,6 +44,30 @@ namespace OnlineShoppingApp.Controllers
                 _cartService.AddToCart(item);
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult UpdateCart(Dictionary<int,int> quant)
+        {
+            var itemId = 0;
+            var quantity = 0;
+			foreach (var entry in quant)
+			{
+				itemId = entry.Key; // This will be "@item.Id"
+				quantity = entry.Value; // This will be the corresponding quantity
+
+				// Process the update for the item with itemId and quantity
+			}
+            _cartService.UpdateCart(itemId, quantity);
+            return RedirectToAction("Index");
+        }
+        public IActionResult Delete(int id)
+        {
+            var cartItem = _cartService.GetCartItem(id);
+            if (cartItem != null)
+            {
+                _cartService.RemoveFromCart(id);
+            }
+            return RedirectToAction("Index");
         }
     }
 }

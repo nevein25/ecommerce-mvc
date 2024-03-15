@@ -4,6 +4,7 @@
 @{
 	var httpContextAccessor = new HttpContextAccessor();
 	ICartService cartService = new CartService(httpContextAccessor);
+	List<DeliveryMethod> deliveryList = ViewBag.DeliveryMethods;
 }
 <h1>Cart Items</h1>
 
@@ -54,11 +55,14 @@
 									<!-- Input Order -->
 									<div class="input-group">
 										<div class="button minus">
-											<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="quant[@item.Id]">
+											<button type="button" class="btn btn-primary btn-number" data-type="minus" data-field="quant[@item.Id]">
 												<i class="ti-minus"></i>
 											</button>
 										</div>
-										<input type="text" name="quant[@item.Id]" class="input-number" data-min="1" data-max="100" value="@item.Quantity">
+										<form method="post" action="@Url.Action("UpdateCart", "Cart")">
+											<input type="hidden" name="id" value="@item.Id" />
+											<input type="text" name="quant[@item.Id]" class="input-number" data-min="1" data-max="100" value="@item.Quantity" onchange="this.form.submit()">
+										</form>
 										<div class="button plus">
 											<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[@item.Id]">
 												<i class="ti-plus"></i>
@@ -69,40 +73,9 @@
 									@item.Quantity
 								</td>
 								<td class="total-amount" data-title="Total"><span>$@cartService.GetTotalPerProduct(item.Id)</span></td>
-								<td class="action" data-title="Remove"><a href="#"><i class="ti-trash remove-icon"></i></a></td>
+								<td class="action" data-title="Remove"><a asp-controller="Cart" asp-action="Delete" asp-route-id="@item.Id"><i class="ti-trash remove-icon"></i></a></td>
 							</tr>
 						}
-						@* @foreach (var item in Model)
-						{
-							<tr>
-								<td class="image" data-title="No"><img src="@item.PictureUrl" alt="#"></td>
-								<td class="product-des" data-title="Description">
-									<p class="product-name"><a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">@item.ProductName</a></p>
-									<p class="product-des">@item.Description</p>
-								</td>
-								<td class="price" data-title="Price"><span>$@item.Price</span></td>
-								<td class="qty" data-title="Qty">
-									<!-- Input Order -->
-									<div class="input-group">
-										<div class="button minus">
-											<button type="button" class="btn btn-primary btn-number" disabled="disabled" data-type="minus" data-field="@item.Id">
-												<i class="ti-minus"></i>
-											</button>
-										</div>
-										<input type="text" name="quant[@item.Id]" class="input-number" data-min="1" data-max="100" value="@item.Quantity">
-										@item.Quantity
-										<div class="button plus">
-											<button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="@item.Id">
-												<i class="ti-plus"></i>
-											</button>
-										</div>
-									</div>
-									<!--/ End Input Order -->
-								</td>
-								<td class="total-amount" data-title="Total"><span>$@cartService.GetTotalPerProduct(item.Id)</span></td>
-								<td class="action" data-title="Remove"><a href="#"><i class="ti-trash remove-icon"></i></a></td>
-							</tr>
-						} *@
 					</tbody>
 				</table>
 				<!--/ End Shopping Summery -->
@@ -115,14 +88,19 @@
 					<div class="row">
 						<div class="col-lg-8 col-md-5 col-12">
 							<div class="left">
-								<div class="coupon">
-									<form action="#" target="_blank">
-										<input name="Coupon" placeholder="Enter Your Coupon">
-										<button class="btn">Apply</button>
-									</form>
-								</div>
-								<div class="checkbox">
-									<label class="checkbox-inline" for="2"><input name="news" id="2" type="checkbox"> Shipping (+10$)</label>
+								<div class="">
+										<label for="news" >Delivery Method</label>
+										<br />
+									@foreach(var item in deliveryList)
+									{
+										@* <label class="checkbox-inline" for="2">
+											<input name="news" id="2" type="radio" value="@item.Id">
+											@item.ShortName (@item.DeliveryCost$)
+										</label> *@
+										<input class="font-weight-bold" name="news" type="radio" value="@item.Id" /> <span class="p-3">@item.ShortName</span> <span>@item.DeliveryCost.ToString("c")</span>
+										<br/>
+									}
+
 								</div>
 							</div>
 						</div>
