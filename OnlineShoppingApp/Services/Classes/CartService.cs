@@ -79,7 +79,7 @@ namespace OnlineShoppingApp.Services
             });
         }
 
-       public void UpdateCart(int id, CartItemViewModel Item)
+       public void UpdateCart(int id, int Quantity)
         {
             // Retrieve existing cart items from cookies
             var existingCart = GetCartItems();
@@ -88,7 +88,7 @@ namespace OnlineShoppingApp.Services
             var existingItem = existingCart.FirstOrDefault(item => item.Id ==id);
 
             // Update properties of the existing item
-            existingItem.Quantity = Item.Quantity; // For example, update the quantity
+            existingItem.Quantity = Quantity; // For example, update the quantity
 
             // Save the updated cart items to cookies
             SaveCartItems(existingCart);

@@ -10,7 +10,7 @@ namespace OnlineShoppingApp.Services.Interfaces
         public void SaveCartItems(List<CartItemViewModel> cartItems);
 
         public void RemoveFromCart(int itemId);
-        public void UpdateCart(int id,CartItemViewModel Item);
+        public void UpdateCart(int id,int Quantity);
         public int GetTotal();
         public int GetTotalPerProduct(int productId);
     }
