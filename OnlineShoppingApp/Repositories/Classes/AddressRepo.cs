@@ -37,7 +37,15 @@ namespace OnlineShoppingApp.Repositories.Classes
 		{
 			if (address != null)
 			{
-				_shoppingContext.Addresses.Add(address);
+                if (address.IsMain == 1)
+                {
+                    var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1);
+                    if (oldMainAddress != null)
+                    {
+                        oldMainAddress.IsMain = 0;
+                    }
+                }
+                _shoppingContext.Addresses.Add(address);
 				_shoppingContext.SaveChanges();
 			}
 		}
@@ -51,7 +59,7 @@ namespace OnlineShoppingApp.Repositories.Classes
 				adrs.Street = address.Street;
 				adrs.City = address.City;
 				adrs.Country = address.Country;
-				if (adrs.IsMain == 0)
+				if (adrs.IsMain == 1)
 				{
 					var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1);
 					if (oldMainAddress != null)
