@@ -13,6 +13,7 @@ namespace OnlineShoppingApp.Controllers
         ICategoriesRepo categoriesRepo;
         IBrandRepo brandRepo;
         IRateRepo _rateRepo { get; }
+        static int ProductIdAjax = 0;
 
         public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, IRateRepo rateRepo)
         {
@@ -33,7 +34,8 @@ namespace OnlineShoppingApp.Controllers
 
         public IActionResult GetProduct(int id)
         {
-
+            ProductIdAjax = id;
+            ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
             return View(ProductRepo.GetById(id));
         }
       
@@ -115,7 +117,14 @@ namespace OnlineShoppingApp.Controllers
 
             if (!_rateRepo.ProductExist(Id)) return View("NotFound");
             _rateRepo.Rate(Id, 2, NumOfStars);
-            return View("GetProduct", ProductRepo.GetById(Id));
+            return PartialView("_RatingPartialView", ProductRepo.GetById(Id));
+        }
+
+        [HttpGet]
+        public IActionResult GetProductRating(int Id)
+        {
+            int rating = _rateRepo.GetRateForUser(ProductIdAjax, 2);
+            return Json(new { rating = rating });
         }
 
         //      public IActionResult DeleteProduct(int id)

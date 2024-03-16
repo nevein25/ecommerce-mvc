@@ -315,11 +315,17 @@
                     <h3>@Model.Name</h3>
                     <div class="d-flex mb-3">
                         <div class="text-primary mr-2">
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star-half-alt"></small>
-                            <small class="far fa-star"></small>
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                @if (@ViewBag.AvgRating >= i + 1)
+                                {
+                                    <small class="fas fa-star"></small>
+                                }
+                                else
+                                {
+                                    <small class="far fa-star"></small>
+                                }
+                            }
                         </div>
                         <small class="pt-1">(99 Reviews)</small>
                     </div>
@@ -503,22 +509,9 @@
                                     <h4 class="mb-4">Leave a review</h4>
                                     <small>Your email address will not be published. Required fields are marked *</small>
                                     <div class="d-flex my-3">
-                                        @using (Html.BeginForm("RateProduct", "Product", FormMethod.Post, new { id = "rateProductForm" }))
-                                        {
-                                            <p class="mb-0 mr-2">Your Rating * :</p>
-                                            <div class="text-primary">
-                                                <button type="submit" class="star-button far fa-star" data-value="1"></button>
-                                                <button type="submit" class="star-button far fa-star" data-value="2"></button>
-                                                <button type="submit" class="star-button far fa-star" data-value="3"></button>
-                                                <button type="submit" class="star-button far fa-star" data-value="4"></button>
-                                                <button type="submit" class="star-button far fa-star" data-value="5"></button>
-                                            </div>
+                                        @*                                       *@
 
-                                            @Html.HiddenFor(model => model.Id)
-                                            <input type="hidden" id="NumOfStars" name="NumOfStars" value="" /> <!-- Hidden input for rating -->
-                                            @* <input type="submit" value="Submit" /> *@
-                                        }
-
+                                        <partial name="_RatingPartialView" model="Model" />
                                     </div>
                                     <form>
                                         <div class="form-group">
