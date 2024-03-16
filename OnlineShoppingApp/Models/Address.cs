@@ -12,6 +12,6 @@ namespace OnlineShoppingApp.Models
         public int IsMain { get; set; }
         [ForeignKey(nameof(Buyer))]
         public int BuyerId { get; set; }
-        public Buyer Buyer { get; set; }
+        public Buyer? Buyer { get; set; }
     }
 }

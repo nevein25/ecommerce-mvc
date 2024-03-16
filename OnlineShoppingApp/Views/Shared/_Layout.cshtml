@@ -121,6 +121,7 @@
 								<li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li>
 								<li><i class="ti-user"></i> <a href="#">My account</a></li>
 								<li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+								<li><i class="fa fa-times-circle"></i><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
 							</ul>
 						</div>
 						<!-- End Top Right -->
@@ -179,7 +180,7 @@
 								<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
 							</div>
 							<div class="sinlge-bar shopping">
-								<a href="#" class="single-icon"><i class="ti-bag"></i> <span class="total-count">@count</span></a>
+								<a  class="single-icon" asp-controller="Cart" asp-action="Index"><i class="ti-bag"></i> <span class="total-count">@count</span></a>
 								<!-- Shopping Item -->
 								<div class="shopping-item">
 									<div class="dropdown-cart-header">
@@ -210,7 +211,21 @@
 											<span>Total</span>
 											<span class="total-amount">$@cartService.GetTotal()</span>
 										</div>
-										<a href="#" class="btn animate" onclick="checkout(@count)">Checkout</a>
+										@if(cartService.GetCartItems().Count == 0)
+										{
+											<div class="alert alert-danger alert-dismissible fade show" role="alert">
+												<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+												<strong>Holy guacamole!</strong> 
+												Your Cart is Empty
+												<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+											</div>
+											<a class="btn animate" asp-controller="Home" asp-action="Index">Checkout</a>
+
+										}
+										else
+										{
+											<a class="btn animate" asp-controller="Address" asp-action="Index">Checkout</a>
+										}
 									</div>
 								</div>
 								<!--/ End Shopping Item -->
@@ -423,7 +438,7 @@
 						</div>
 						<div class="col-lg-6 col-12">
 							<div class="right">
-								<img src="images/payments.png" alt="#">
+								<img src="/images/payments.png" alt="#">
 							</div>
 						</div>
 					</div>
@@ -470,6 +485,7 @@
 	<script src="/js/easing.js"></script>
 	<!-- Active J/S -->
 	<script src="/js/active.js"></script>
-	 <script src="/js/cart.js"></script> 
+	 <script src="/js/cart.js"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
