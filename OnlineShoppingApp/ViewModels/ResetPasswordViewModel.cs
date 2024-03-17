@@ -10,7 +10,8 @@ namespace OnlineShoppingApp.ViewModels
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+		[RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}$", ErrorMessage = "The password must be at least 6 characters long and contain at least one digit, one lowercase letter, one uppercase letter, and one special character....")]
+		public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
