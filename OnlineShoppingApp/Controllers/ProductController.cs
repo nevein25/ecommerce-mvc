@@ -13,7 +13,7 @@ namespace OnlineShoppingApp.Controllers
         ICategoriesRepo categoriesRepo;
         IBrandRepo brandRepo;
         IRateRepo _rateRepo { get; }
-        static int ProductIdAjax = 0;
+        static int ProductIdForJs = 0;
 
         public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, IRateRepo rateRepo)
         {
@@ -34,7 +34,7 @@ namespace OnlineShoppingApp.Controllers
 
         public IActionResult GetProduct(int id)
         {
-            ProductIdAjax = id;
+            ProductIdForJs = id;
             ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
             return View(ProductRepo.GetById(id));
         }
@@ -123,7 +123,7 @@ namespace OnlineShoppingApp.Controllers
         [HttpGet]
         public IActionResult GetProductRating(int Id)
         {
-            int rating = _rateRepo.GetRateForUser(ProductIdAjax, 2);
+            int rating = _rateRepo.GetRateForUser(ProductIdForJs, 2);
             return Json(new { rating = rating });
         }
 
