@@ -8,8 +8,13 @@ namespace OnlineShoppingApp.Models
        
 
         public string? BusinessName { get; set; }
+        [MaxLength(9)]
+        public string VAT { get; set; }
+
         public bool IsVerified { get; set; } = false;
 
+        // navigation properties
+        public List<ProductSeller> ProductSellers { get; set; }
 
     }
 }

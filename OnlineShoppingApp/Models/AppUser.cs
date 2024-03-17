@@ -15,6 +15,9 @@ namespace OnlineShoppingApp.Models
 
         public string LastName { get; set; }
 
+        public string? Image { get; set; }
+
+
 
         // navigation props
         public List<AppUserRole> UserRoles { get; set; }

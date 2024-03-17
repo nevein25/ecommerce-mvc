@@ -19,16 +19,16 @@ namespace OnlineShoppingApp.Repositories.Classes
         }
         public void Rate(int ProductId, int UserId, int NumOfStars)
         {
-            var rate = _context.Rate.Find(ProductId, UserId);
+            var rate = _context.Rates.Find(ProductId, UserId);
             if (rate != null)
             {
                 if (rate.NumOfStars == NumOfStars)
                 {
-                    _context.Rate.Remove(rate);
+                    _context.Rates.Remove(rate);
                     _context.SaveChanges();
                     return;
                 }
-                _context.Rate.Remove(rate);
+                _context.Rates.Remove(rate);
             }
 
             if (NumOfStars >= 1 && NumOfStars <= 5)
@@ -41,7 +41,7 @@ namespace OnlineShoppingApp.Repositories.Classes
                     NumOfStars = NumOfStars
                 };
 
-                _context.Rate.Add(rate);
+                _context.Rates.Add(rate);
                 _context.SaveChanges();
 
             }
@@ -49,12 +49,12 @@ namespace OnlineShoppingApp.Repositories.Classes
 
         public int GetRateForUser(int productId, int userId)
         {
-            return _context.Rate.Where(r => r.ProductId == productId && r.BuyerId == userId).Select(r => r.NumOfStars).FirstOrDefault();
+            return _context.Rates.Where(r => r.ProductId == productId && r.BuyerId == userId).Select(r => r.NumOfStars).FirstOrDefault();
         }
 
         public int GetAvgRateForProduct(int productId)
         {
-            var ratings = _context.Rate
+            var ratings = _context.Rates
                         .Where(r => r.ProductId == productId)
                         .Select(r => r.NumOfStars)
                         .ToList();

@@ -36,7 +36,10 @@ namespace OnlineShoppingApp.Models
 
 		public List<Rate> Rates { get; set; }
 		public List<Comment> Comments { get; set; }
+        public List<ProductSeller> ProductSellers { get; set; }
 
 
-	}
+
+
+    }
 }
