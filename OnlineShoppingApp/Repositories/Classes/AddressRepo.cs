@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Context;
+using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
 
@@ -39,7 +40,7 @@ namespace OnlineShoppingApp.Repositories.Classes
 			{
                 if (address.IsMain == 1)
                 {
-                    var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1);
+                    var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1 && a.BuyerId == UserHelper.LoggedinUserId);
                     if (oldMainAddress != null)
                     {
                         oldMainAddress.IsMain = 0;
@@ -61,7 +62,7 @@ namespace OnlineShoppingApp.Repositories.Classes
 				adrs.Country = address.Country;
 				if (adrs.IsMain == 1)
 				{
-					var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1);
+					var oldMainAddress = _shoppingContext.Addresses.FirstOrDefault(a => a.IsMain == 1 && a.BuyerId == UserHelper.LoggedinUserId);
 					if (oldMainAddress != null)
 					{
 						oldMainAddress.IsMain = 0;
@@ -76,5 +77,10 @@ namespace OnlineShoppingApp.Repositories.Classes
 		{
 			return _shoppingContext.Users.Find(id);
 		}
-	}
+
+        public List<Address> GetAddressByBuyerId(int id)
+        {
+            return _shoppingContext.Addresses.Where(Ad => Ad.BuyerId == id).ToList();
+        }
+    }
 }

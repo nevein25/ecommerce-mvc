@@ -32,8 +32,7 @@
                     <h2>Make Your Checkout Here</h2>
                     <p>Please register in order to checkout more quickly</p>
                     <!-- Form -->
-                    <form class="form" method="post" action="@Url.Action("AddNewAddress", "Address")">
-                        <input name="BuyerId" value="@usr.Id" hidden />
+                    <form class="form">
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="form-group">
@@ -72,7 +71,10 @@
                             @* @if (Request.Form["chooseAddress"] == "ch2")
                             { *@
                         </div>
-                        <div class="row" id="newAddressFields" style="display: none;">
+                    </form>
+                    <form class="form" id="NewAddressForm" method="post" action="@Url.Action("AddNewAddress", "Address")" style="display: none;">
+                        <input name="BuyerId" value="@usr.Id" hidden />
+                        <div class="row" id="newAddressFields" >
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="form-group">
                                     <label>Building Number<span>*</span></label>
@@ -363,14 +365,27 @@
                                     <label>Is this Address your Main ?</label>
                                 </div>
                             </div>
-                            <input type="submit" class="btn" />
+                            <div class="col-12 m-3">
+                                <input type="submit" class="btn" value="Proceed to checkout" />
+                            </div>
+                        </div>
+                    </form>
+                    <form class="form" id="ExistingAddressForm" method="post" action="@Url.Action("GetExistingAddressId", "Address")" style="display: none;">
+                            <input name="BuyerId" value="@usr.Id" hidden />
+                        <div class="row" id="existingAdresses" >
+                            <div class="col-lg-12 col-md-12 col-12">
+                                <select asp-for="Id" class="form-control" asp-items="ViewBag.AddressList"></select>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-12 m-3">
+                                <input type="submit" class="btn" value="Proceed to checkout" />
+                            </div>
                         </div>
                         @* } *@
                     </form>
                     <!--/ End Form -->
                 </div>
             </div>
-            <div class="col-lg-4 col-12">
+            @* <div class="col-lg-4 col-12">
                 <div class="order-details">
                     <!-- Order Widget -->
                     <div class="single-widget">
@@ -413,7 +428,7 @@
                     </div>
                     <!--/ End Button Widget -->
                 </div>
-            </div>
+            </div> *@
         </div>
     </div>
 </section>

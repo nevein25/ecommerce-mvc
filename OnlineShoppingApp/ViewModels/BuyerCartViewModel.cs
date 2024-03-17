@@ -6,7 +6,7 @@ namespace OnlineShoppingApp.ViewModels
     {
         public int Id { get; set; }
         public int BuyerId { get; set; }
-        public Buyer Buyer { get; set; }
+        public Buyer? Buyer { get; set; }
         public List<CartItemViewModel> Items { get; set; }
         public int? DeliveryMethodId { get; set; }
         public decimal ShippingPrice { get; set; }

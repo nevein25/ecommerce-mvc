@@ -10,5 +10,7 @@ namespace OnlineShoppingApp.Repositories.Interfaces
 		public void Update(int  id, Address address);
 		public void Delete(int id);
 		public AppUser GetUser(int id);
-	}
+		public List<Address> GetAddressByBuyerId(int id);
+
+    }
 }

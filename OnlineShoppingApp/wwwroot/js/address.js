@@ -22,10 +22,13 @@ radioButtons.forEach(function (radio) {
 });
 
 function toggleAddNewAddress(radio) {
-    var newAddressFields = document.getElementById("newAddressFields");
+    var newAddressFields = document.getElementById("NewAddressForm");
+    var ExistingAddress = document.getElementById("ExistingAddressForm");
     if (radio.checked && radio.value === "ch2") {
         newAddressFields.style.display = "flex";
+        ExistingAddress.style.display = "none";
     } else {
+        ExistingAddress.style.display = "flex";
         newAddressFields.style.display = "none";
     }
 }
