@@ -121,7 +121,6 @@
 								<li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li>
 								<li><i class="ti-user"></i> <a href="#">My account</a></li>
 								<li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
-								<li><i class="fa fa-times-circle"></i><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
 							</ul>
 						</div>
 						<!-- End Top Right -->
@@ -192,7 +191,7 @@
 										{
 											<li>
 												<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-												<a asp-controller="Cart" asp-action="Delete" asp-route-id="@item.Id" class="remove"><i class="fa fa-remove"></i></a>
+												<a asp-controller="Cart" asp-action="DeleteFromIndex" asp-route-id="@item.Id" class="remove"><i class="fa fa-remove"></i></a>
 												<a class="cart-img" asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id"><img src="@item.PictureUrl" alt="#"></a>
 												<h4><a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">@item.ProductName</a></h4>
 												<p class="quantity">@item.Quantity x - <span class="amount">$@item.Price</span></p>

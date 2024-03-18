@@ -8,7 +8,7 @@ namespace OnlineShoppingApp.Models
         public int Id { get; set; }
         [ForeignKey(nameof(Buyer))]
         public int BuyerId { get; set; }
-        public Buyer Buyer { get; set; }
+        public Buyer? Buyer { get; set; }
         public DateTimeOffset OderDate { get; set; } = DateTimeOffset.UtcNow;
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public Address ShippingAddress { get; set; }

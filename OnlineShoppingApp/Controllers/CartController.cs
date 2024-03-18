@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShoppingApp.Extentions;
+using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
@@ -12,14 +14,14 @@ namespace OnlineShoppingApp.Controllers
     {
         private readonly CartService _cartService;
         private readonly IProductRepo _ProductRepo;
-		private readonly IDeliveryMethodsRepo _deliveryMethod;
+        private readonly IDeliveryMethodsRepo _deliveryMethod;
 
-		public CartController(CartService cartService,IProductRepo productRepo, IDeliveryMethodsRepo deliveryMethod)
+        public CartController(CartService cartService, IProductRepo productRepo, IDeliveryMethodsRepo deliveryMethod)
         {
             _cartService = cartService;
             _ProductRepo = productRepo;
-			_deliveryMethod = deliveryMethod;
-		}
+            _deliveryMethod = deliveryMethod;
+        }
 
         public IActionResult Index()
         {
@@ -29,7 +31,7 @@ namespace OnlineShoppingApp.Controllers
         public IActionResult AddToCart(int id)
         {
             var prod = _ProductRepo.GetById(id);
-            if(prod != null)
+            if (prod != null)
             {
                 CartItemViewModel item = new CartItemViewModel()
                 {
@@ -40,23 +42,23 @@ namespace OnlineShoppingApp.Controllers
                     Brand = prod.Brand.Name,
                     Category = prod.Category.Name,
                     Description = prod.Description
-				};
+                };
                 _cartService.AddToCart(item);
             }
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult UpdateCart(Dictionary<int,int> quant)
+        public IActionResult UpdateCart(Dictionary<int, int> quant)
         {
             var itemId = 0;
             var quantity = 0;
-			foreach (var entry in quant)
-			{
-				itemId = entry.Key; // This will be "@item.Id"
-				quantity = entry.Value; // This will be the corresponding quantity
+            foreach (var entry in quant)
+            {
+                itemId = entry.Key; // This will be "@item.Id"
+                quantity = entry.Value; // This will be the corresponding quantity
 
-				// Process the update for the item with itemId and quantity
-			}
+                // Process the update for the item with itemId and quantity
+            }
             _cartService.UpdateCart(itemId, quantity);
             return RedirectToAction("Index");
         }
@@ -68,6 +70,26 @@ namespace OnlineShoppingApp.Controllers
                 _cartService.RemoveFromCart(id);
             }
             return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteFromIndex(int id)
+        {
+            var cartItem = _cartService.GetCartItem(id);
+            if (cartItem != null)
+            {
+                _cartService.RemoveFromCart(id);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult ProceedToAddress(int newss)
+        {
+            BuyerCartViewModel buyerCart = new BuyerCartViewModel()
+            {
+                BuyerId = User.GetUserId(),
+                Items = _cartService.GetCartItems(),
+                DeliveryMethodId = newss
+            };
+            return RedirectToAction("Index", "Address");
         }
     }
 }
