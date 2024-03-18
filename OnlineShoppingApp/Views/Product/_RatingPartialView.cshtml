@@ -1,5 +1,16 @@
 ﻿ @model OnlineShoppingApp.Models.Product
 
+<style>
+    .star-button {
+        background-color: transparent;
+        border: none;
+        color: #007bff !important;
+    }
+
+    .star-button:focus {
+        outline: none
+    }
+</style>
 @using (Html.BeginForm("RateProduct", "Product", FormMethod.Post, new { id = "rateProductForm" }))
 {
     <p class="mb-0 mr-2">Your Rating * :</p>
@@ -12,9 +23,6 @@
     </div>
 
     @Html.HiddenFor(model => model.Id)
-    <input type="hidden" id="NumOfStars" name="NumOfStars" value="" /> <!-- Hidden input for rating -->
-    @* <input type="submit" value="Submit" /> *@
+    <input type="hidden" id="NumOfStars" name="NumOfStars" value="" />
+
 }
-
-
-@*     <script src="~/js/RateProducts.js"></script> *@
