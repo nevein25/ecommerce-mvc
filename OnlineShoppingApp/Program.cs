@@ -25,6 +25,10 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<ICategoriesRepo, CategoryRepo>();
             builder.Services.AddScoped<IBrandRepo, BrandRepo>();
             builder.Services.AddScoped<ICommentsRepo, CommentsRepo>();
+            builder.Services.AddScoped<IRateRepo, RateRepo>();
+            builder.Services.AddScoped<IBuyerRepo, BuyerRepo>();
+
+
 
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();

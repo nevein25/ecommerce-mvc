@@ -31,13 +31,13 @@ namespace OnlineShoppingApp.Context
         public DbSet<Category> Categories { get; set; } 
         public DbSet<Brand> Brands { get; set; }
 
-        public DbSet<ProductSeller> productSellers { get; set; }
+        public DbSet<ProductSeller> ProductSellers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
-        public DbSet<Rate> Rate { get; set; }
+        public DbSet<Rate> Rates { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 
 
@@ -58,15 +58,6 @@ namespace OnlineShoppingApp.Context
             builder.Entity<IdentityRoleClaim<int>>(entity => { entity.ToTable("RoleClaims"); });
             ///
 
-            //builder.Entity<IdentityUser<int>>().ToTable("MyUsers");
-            //builder.Entity<IdentityRole<int>>().ToTable("MyRoles");
-            //builder.Entity<IdentityUserRole<int>>().ToTable("MyUserRoles");
-            //builder.Entity<IdentityUserClaim<int>>().ToTable("MyUserClaims");
-            //builder.Entity<IdentityUserLogin<int>>().ToTable("MyUserLogins");
-            //builder.Entity<IdentityUserToken<int>>().ToTable("MyUserTokens");
-            //builder.Entity<IdentityRoleClaim<int>>().ToTable("MyRoleClaims");
-
-
             /// TPT approach
             builder.Entity<AppUser>().ToTable("Users");
             builder.Entity<Admin>().ToTable("Admins");
@@ -79,8 +70,6 @@ namespace OnlineShoppingApp.Context
             builder.Entity<AppUserRole>()
               .HasKey(ur => new { ur.UserId, ur.RoleId });
 
-            builder.Entity<ProductSeller>()
-               .HasKey(ps => new { ps.UserId, ps.ProductId });
             builder
                 .Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)
@@ -94,13 +83,8 @@ namespace OnlineShoppingApp.Context
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
-            builder.Entity<Order>().Property(O => O.SubTotal).HasColumnType("decimal(18,2)");
-            builder.Entity<DeliveryMethod>().Property(D => D.DeliveryCost).HasColumnType("decimal(18,2)");
-            builder.Entity<OrderItem>().Property(I => I.Price).HasColumnType("decimal(18,2)");
-            builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
 
             ///
-            builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
 
 			/// [Buyer] * <rate> * [Product]
 			builder.Entity<Rate>().HasKey(p => new { p.ProductId, p.BuyerId });
@@ -114,7 +98,28 @@ namespace OnlineShoppingApp.Context
 			builder
 				.Entity<Rate>()
 				.HasOne(R => R.Buyer);
-			///
+            ///
+
+
+            /// [Seller] * <Sell> * [Product]
+            builder.Entity<ProductSeller>().HasKey(ps => new { ps.ProductId, ps.SellerId });
+
+            builder
+                .Entity<ProductSeller>()
+                .HasOne(R => R.Product)
+                .WithMany(R => R.ProductSellers)
+                .HasForeignKey(R => R.ProductId);
+
+            builder
+                .Entity<ProductSeller>()
+                .HasOne(R => R.Seller);
+            ///
+
+            builder.Entity<Order>().Property(O => O.SubTotal).HasColumnType("decimal(18,2)");
+            builder.Entity<DeliveryMethod>().Property(D => D.DeliveryCost).HasColumnType("decimal(18,2)");
+            builder.Entity<OrderItem>().Property(I => I.Price).HasColumnType("decimal(18,2)");
+            builder.Entity<Product>().Property(P => P.Price).HasColumnType("decimal(18,2)");
+
 		}
 	}
 }

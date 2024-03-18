@@ -63,9 +63,15 @@ namespace OnlineShoppingApp.Services
 
         public List<CartItemViewModel> GetCartItems()
         {
+        
+            if (UserHelper.LoggedinUserId != 0)
+            {
+
             var context = _httpContextAccessor.HttpContext;
             var cartJson = context.Request.Cookies[CartKey];
             return cartJson != null ? JsonConvert.DeserializeObject<List<CartItemViewModel>>(cartJson) : new List<CartItemViewModel>();
+            }
+            return new List<CartItemViewModel> { };
         }
 
         public void SaveCartItems(List<CartItemViewModel> cartItems)

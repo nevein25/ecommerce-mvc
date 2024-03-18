@@ -61,12 +61,14 @@ namespace OnlineShoppingApp.Controllers
 
 			var result = await HttpContext.AuthenticateAsync("Google");
 			var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-			var user = await _userManager.FindByEmailAsync(email);
+            var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName); 
+            var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
+            var user = await _userManager.FindByEmailAsync(email);
 
 			// User does not exist, so create a new user
 			if (user == null)
 			{
-				user = new Buyer { UserName = email, Email = email, FirstName = email, LastName = email };
+				user = new Buyer { UserName = email, Email = email, FirstName = firstName, LastName = lastName };
 				var createResult = await _userManager.CreateAsync(user);
 
 				var roleResult = await _userManager.AddToRoleAsync(user, UserType.Buyer.ToString());
@@ -107,8 +109,9 @@ namespace OnlineShoppingApp.Controllers
 			if (user.EmailConfirmed)
 			{
 				await _signInManager.SignInAsync(user, isPersistent: false);
-				UserHelper.LoggedinUserId = user.Id;
-				return RedirectToAction("Index", "Home");
+                UserHelper.LoggedinUserId = user.Id;
+
+                return RedirectToAction("Index", "Home");
 
 			}
 			else
@@ -168,11 +171,11 @@ namespace OnlineShoppingApp.Controllers
 			AppUser user = null;
 			if (ModelState.IsValid)
 			{
-				if (!IsValidEmail(model.Email))
-				{
-					ModelState.AddModelError("Email", "Please provide a valid email address (e.g., example@example.com)");
-					return View(model);
-				}
+				//if (!IsValidEmail(model.Email))
+				//{
+				//	ModelState.AddModelError("Email", "Please provide a valid email address (e.g., example@example.com)");
+				//	return View(model);
+				//}
 
 				if (_userRepo.EmailExist(model.Email))
 				{
@@ -180,11 +183,11 @@ namespace OnlineShoppingApp.Controllers
 					return View(model);
 				}
 
-				if (!IsPasswordCompatible(model.Password))
-				{
-					ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
-					return View(model);
-				}
+				//if (!IsPasswordCompatible(model.Password))
+				//{
+				//	ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
+				//	return View(model);
+				//}
 				if (_userRepo.UsernameExist(model.Username))
 				{
 					ModelState.AddModelError("Username", "Username is taken");
@@ -327,11 +330,11 @@ namespace OnlineShoppingApp.Controllers
 
 			if (ModelState.IsValid)
 			{
-				if (!IsPasswordCompatible(model.Password))
-				{
-					ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
-					return View(model);
-				}
+				//if (!IsPasswordCompatible(model.Password))
+				//{
+				//	ModelState.AddModelError("Password", "Passwords must be at least 6 characters, at least one digit, one lowercase letter, one uppercase letter, and one non-alphanumeric character.");
+				//	return View(model);
+				//}
 
 				var user = await _userManager.FindByEmailAsync(model.Email);
 
@@ -380,20 +383,20 @@ namespace OnlineShoppingApp.Controllers
 		}
 
 
-		private bool IsPasswordCompatible(string password)
-		{
-			return password.Length >= 6
-				&& password.Any(char.IsDigit)
-				&& password.Any(char.IsLower)
-				&& password.Any(char.IsUpper)
-				&& password.Any(c => !char.IsLetterOrDigit(c));
-		}
+		//private bool IsPasswordCompatible(string password)
+		//{
+		//	return password.Length >= 6
+		//		&& password.Any(char.IsDigit)
+		//		&& password.Any(char.IsLower)
+		//		&& password.Any(char.IsUpper)
+		//		&& password.Any(c => !char.IsLetterOrDigit(c));
+		//}
 
-		private bool IsValidEmail(string email)
-		{
-			string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
-			return Regex.IsMatch(email, emailPattern);
-		}
+		//private bool IsValidEmail(string email)
+		//{
+		//	string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+		//	return Regex.IsMatch(email, emailPattern);
+		//}
 	}
 
 }

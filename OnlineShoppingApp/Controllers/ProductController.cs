@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineShoppingApp.Extentions;
 using OnlineShoppingApp.Helpers;
@@ -15,14 +16,20 @@ namespace OnlineShoppingApp.Controllers
         IProductRepo ProductRepo;
         ICategoriesRepo categoriesRepo;
         IBrandRepo brandRepo;
+
+        IRateRepo _rateRepo { get; }
+        static int ProductIdForJs = 0;
         ICommentsRepo commentsRepo;
-        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, ICommentsRepo commentsRepo)
+        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, ICommentsRepo commentsRepo, IRateRepo rateRepo)
         {
             ProductRepo = _productRepo;
             categoriesRepo = _categoriesRepo;
             brandRepo = _brandRepo;
             this.commentsRepo = commentsRepo;
+            _rateRepo = rateRepo;
+
         }
+
 
         //public IActionResult GetAllProductss()
         //{
@@ -56,14 +63,17 @@ namespace OnlineShoppingApp.Controllers
                 return NotFound("No Product is found");
             }
             var comments = commentsRepo.GetAllComments(id);
-            var productViewModel = new ProductViewModel
-            {
-                Products = new List<Product> { product },
-                Comments = comments
-                // Populate other data in the view model as needed
-            };
+            //var productViewModel = new ProductViewModel
+            //{
+            //    Products = new List<Product> { product },
+            //    Comments = comments
+            //    // Populate other data in the view model as needed
+            //};
 
-            return View(productViewModel);
+            ProductIdForJs = id;
+            ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
+            return View(product);
+
         }
 
 
@@ -202,5 +212,58 @@ namespace OnlineShoppingApp.Controllers
             });
         }
 
+  
+
+        [HttpPost]
+        public IActionResult RateProduct(int Id, int NumOfStars)
+        {
+            int userId = User.GetUserId();
+            if (userId != null)
+            {
+                if (!_rateRepo.ProductExist(Id)) return View("NotFound");
+                _rateRepo.Rate(Id, userId, NumOfStars);
+            }
+          
+            return PartialView("_RatingPartialView", ProductRepo.GetById(Id));
+        }
+
+        [HttpGet]
+        public IActionResult GetProductRating(int Id)
+        {
+            int userId = User.GetUserId();
+            if (userId != null)
+            {
+                int rating = _rateRepo.GetRateForUser(ProductIdForJs, userId);
+                return Json(new { rating = rating });
+            }
+            return Json(new {});
+        }
+
+        //      public IActionResult DeleteProduct(int id)
+        //      {
+
+        //          return View();
+        //      }
+
+        //[HttpPost]
+        //public IActionResult DeleteProduct(int id)
+        //{
+        //	// Retrieve the product by its id
+        //	var product = ProductRepo.GetById(id);
+
+        //	// Check if the product exists
+        //	if (product != null)
+        //	{
+        //		// Delete the product from the repository
+        //		ProductRepo.Delete(product);
+
+        //		// Redirect to the appropriate view (e.g., a list of all products)
+        //		return RedirectToAction("GetAllProducts");
+        //	}
+
+        //	// If the product does not exist, return a not found error or redirect to an error page
+        //	return NotFound();
+        //}
     }
+
 }

@@ -34,6 +34,7 @@ namespace OnlineShoppingApp.Controllers
                 Brands = brandRepo.GetAll(),
                 Products = ProductRepo.GetAll()
             };
+            ViewBag.ProductCategories = categoriesRepo.GetAll();
             return View(viewModel);
         }
         public IActionResult Privacy()
