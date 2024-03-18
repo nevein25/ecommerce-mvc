@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineShoppingApp.Extentions;
 using OnlineShoppingApp.Models;
@@ -114,17 +115,26 @@ namespace OnlineShoppingApp.Controllers
         [HttpPost]
         public IActionResult RateProduct(int Id, int NumOfStars)
         {
-
-            if (!_rateRepo.ProductExist(Id)) return View("NotFound");
-            _rateRepo.Rate(Id, 2, NumOfStars);
+            int userId = User.GetUserId();
+            if (userId != null)
+            {
+                if (!_rateRepo.ProductExist(Id)) return View("NotFound");
+                _rateRepo.Rate(Id, userId, NumOfStars);
+            }
+          
             return PartialView("_RatingPartialView", ProductRepo.GetById(Id));
         }
 
         [HttpGet]
         public IActionResult GetProductRating(int Id)
         {
-            int rating = _rateRepo.GetRateForUser(ProductIdForJs, 2);
-            return Json(new { rating = rating });
+            int userId = User.GetUserId();
+            if (userId != null)
+            {
+                int rating = _rateRepo.GetRateForUser(ProductIdForJs, userId);
+                return Json(new { rating = rating });
+            }
+            return Json(new {});
         }
 
         //      public IActionResult DeleteProduct(int id)

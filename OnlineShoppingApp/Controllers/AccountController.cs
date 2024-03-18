@@ -61,12 +61,14 @@ namespace OnlineShoppingApp.Controllers
 
 			var result = await HttpContext.AuthenticateAsync("Google");
 			var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-			var user = await _userManager.FindByEmailAsync(email);
+            var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName); 
+            var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
+            var user = await _userManager.FindByEmailAsync(email);
 
 			// User does not exist, so create a new user
 			if (user == null)
 			{
-				user = new Buyer { UserName = email, Email = email, FirstName = email, LastName = email };
+				user = new Buyer { UserName = email, Email = email, FirstName = firstName, LastName = lastName };
 				var createResult = await _userManager.CreateAsync(user);
 
 				var roleResult = await _userManager.AddToRoleAsync(user, UserType.Buyer.ToString());
