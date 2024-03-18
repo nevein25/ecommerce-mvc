@@ -107,6 +107,7 @@ namespace OnlineShoppingApp.Controllers
 			if (user.EmailConfirmed)
 			{
 				await _signInManager.SignInAsync(user, isPersistent: false);
+				UserHelper.LoggedinUserId = user.Id;
 				return RedirectToAction("Index", "Home");
 
 			}

@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShoppingApp.Extentions;
+using OnlineShoppingApp.Helpers;
+using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.ViewModels;
 using System.Collections.Generic;
@@ -9,35 +13,83 @@ namespace OnlineShoppingApp.Controllers
     public class CartController : Controller
     {
         private readonly CartService _cartService;
+        private readonly IProductRepo _ProductRepo;
+        private readonly IDeliveryMethodsRepo _deliveryMethod;
 
-        public CartController(CartService cartService)
+        public CartController(CartService cartService, IProductRepo productRepo, IDeliveryMethodsRepo deliveryMethod)
         {
             _cartService = cartService;
+            _ProductRepo = productRepo;
+            _deliveryMethod = deliveryMethod;
         }
 
         public IActionResult Index()
         {
-            //var id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            // Check if the cart is empty, then add dummy cart items
-            var cartItems = _cartService.GetCartItems();
-            // Dummy data
-            //var dummyCartItems = new List<CartItemViewModel>
-            //{
-            //    new CartItemViewModel { Id = 1, ProductName = "Product 1", Price = 10.0m },
-            //    new CartItemViewModel { Id = 2, ProductName = "Product 2", Price = 15.0m }
-            //};
+            ViewBag.DeliveryMethods = _deliveryMethod.GetAll();
+            return View(_cartService.GetCartItems());
+        }
+        public IActionResult AddToCart(int id)
+        {
+            var prod = _ProductRepo.GetById(id);
+            if (prod != null)
+            {
+                CartItemViewModel item = new CartItemViewModel()
+                {
+                    Id = id,
+                    ProductName = prod.Name,
+                    PictureUrl = prod.Images.Where(I => I.IsMain == 1).Select(I => I.Source).FirstOrDefault(),
+                    Price = prod.Price,
+                    Brand = prod.Brand.Name,
+                    Category = prod.Category.Name,
+                    Description = prod.Description
+                };
+                _cartService.AddToCart(item);
+            }
+            return RedirectToAction("Index", "Home");
+        }
 
+        public IActionResult UpdateCart(Dictionary<int, int> quant)
+        {
+            var itemId = 0;
+            var quantity = 0;
+            foreach (var entry in quant)
+            {
+                itemId = entry.Key; // This will be "@item.Id"
+                quantity = entry.Value; // This will be the corresponding quantity
 
-            var item=new CartItemViewModel (){ Id = 2, ProductName = "Product 2", Price = 10.0m,Quantity=3 };
+                // Process the update for the item with itemId and quantity
+            }
+            _cartService.UpdateCart(itemId, quantity);
+            return RedirectToAction("Index");
+        }
+        public IActionResult Delete(int id)
+        {
+            var cartItem = _cartService.GetCartItem(id);
+            if (cartItem != null)
+            {
+                _cartService.RemoveFromCart(id);
+            }
+            return RedirectToAction("Index");
+        }
 
-
-            _cartService.AddToCart(item);
-            //_cartService.UpdateCart(item.Id, item);
-
-            // Get cart items from the service
-            cartItems = _cartService.GetCartItems();
-
-            return View(cartItems);
+        public IActionResult DeleteFromIndex(int id)
+        {
+            var cartItem = _cartService.GetCartItem(id);
+            if (cartItem != null)
+            {
+                _cartService.RemoveFromCart(id);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult ProceedToAddress(int newss)
+        {
+            BuyerCartViewModel buyerCart = new BuyerCartViewModel()
+            {
+                BuyerId = User.GetUserId(),
+                Items = _cartService.GetCartItems(),
+                DeliveryMethodId = newss
+            };
+            return RedirectToAction("Index", "Address");
         }
     }
 }

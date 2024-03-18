@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineShoppingApp.Models;
 
 namespace OnlineShoppingApp.ViewModels
