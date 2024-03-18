@@ -6,11 +6,6 @@
             $('#otherBrandGroup').hide();
         }
     });
-});
-
-
-$(document).ready(function () {
-
 
     // Add new image URL input field  
     $('#addImageUrl').click(function () {
@@ -27,3 +22,6 @@ $(document).ready(function () {
         $(this).closest('.input-group').remove();
     });
 });
+
+
+

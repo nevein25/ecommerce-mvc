@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineShoppingApp.Extentions;
+using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Classes;
 using OnlineShoppingApp.Repositories.Interfaces;
+using OnlineShoppingApp.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OnlineShoppingApp.Controllers
 {
@@ -10,27 +15,81 @@ namespace OnlineShoppingApp.Controllers
         IProductRepo ProductRepo;
         ICategoriesRepo categoriesRepo;
         IBrandRepo brandRepo;
-        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo)
+        ICommentsRepo commentsRepo;
+        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, ICommentsRepo commentsRepo)
         {
             ProductRepo = _productRepo;
             categoriesRepo = _categoriesRepo;
             brandRepo = _brandRepo;
+            this.commentsRepo = commentsRepo;
         }
+
+        //public IActionResult GetAllProductss()
+        //{
+        //    ViewBag.category = categoriesRepo.GetAll();
+        //    ViewBag.brand = brandRepo.GetAll();
+        //    return View("GetAllProducts", ProductRepo.GetAll());
+        //}
+
 
         public IActionResult GetAllProducts()
+		{
+			var viewModel = new ProductViewModel
+			{
+				Categories = categoriesRepo.GetAll(),
+				Brands = brandRepo.GetAll(),
+				Products = ProductRepo.GetAll()
+			};
+
+			return View("~/Views/Home/Index.cshtml", viewModel);
+		}
+
+
+
+
+		public IActionResult GetProduct(int id)
         {
-            ViewBag.category = categoriesRepo.GetAll();
-            ViewBag.brand = brandRepo.GetAll();
-            return View(ProductRepo.GetAll());
+
+            var product = ProductRepo.GetById(id);
+            if (product == null)
+            {
+                return NotFound("No Product is found");
+            }
+            var comments = commentsRepo.GetAllComments(id);
+            var productViewModel = new ProductViewModel
+            {
+                Products = new List<Product> { product },
+                Comments = comments
+                // Populate other data in the view model as needed
+            };
+
+            return View(productViewModel);
         }
 
-        public IActionResult GetProduct(int id)
-        {
 
-            return View(ProductRepo.GetById(id));
-        }
-      
-        public IActionResult InsertNewProduct()
+     
+
+
+        public IActionResult SearchProducts(string search,int? category)
+		{
+			var filteredProducts = ProductRepo.GetProductsStartingWith(search);
+
+			if (category.HasValue && category.Value != 0) // Assuming 0 represents "All Categories"
+			{
+				filteredProducts = filteredProducts.Where(p => p.categoryId == category.Value).ToList();
+			}
+			var viewModel = new ProductViewModel
+			{
+				Products = filteredProducts,
+                Categories= categoriesRepo.GetAll()
+			};
+			// Pass the filtered products to the view
+			return View(viewModel);
+		}
+
+
+
+		public IActionResult InsertNewProduct()
         {
             SelectList categories= new SelectList( categoriesRepo.GetAll(),"Id","Name");
             SelectList Brands = new SelectList(brandRepo.GetAll(), "Id", "Name");
@@ -84,7 +143,7 @@ namespace OnlineShoppingApp.Controllers
         [HttpPost]
         public IActionResult EditProduct(int id, Product product)
         {
-            if (ModelState.IsValid)
+            if (product!=null)
             {
                 ProductRepo.Edit(id, product);
                 return RedirectToAction("GetAllProducts");
@@ -102,30 +161,46 @@ namespace OnlineShoppingApp.Controllers
             return View(product);
         }
 
-  //      public IActionResult DeleteProduct(int id)
-  //      {
+      
+        public IActionResult DeleteProduct(int id)
+        {
+            // Retrieve the product by its id
+            Product prod = ProductRepo.GetById(id);
 
-  //          return View();
-  //      }
+            // Check if the product exists
+            if (prod != null)
+            {
+                // Delete the product from the repository
+                ProductRepo.Delete(prod);
 
-		//[HttpPost]
-		//public IActionResult DeleteProduct(int id)
-		//{
-		//	// Retrieve the product by its id
-		//	var product = ProductRepo.GetById(id);
+                // Redirect to the appropriate view (e.g., a list of all products)
+               // return RedirectToAction("GetAllProducts");
+               return NoContent();
+            }
 
-		//	// Check if the product exists
-		//	if (product != null)
-		//	{
-		//		// Delete the product from the repository
-		//		ProductRepo.Delete(product);
+            // If the product does not exist, return a not found error or redirect to an error page
+            return NotFound();
+        }
 
-		//		// Redirect to the appropriate view (e.g., a list of all products)
-		//		return RedirectToAction("GetAllProducts");
-		//	}
 
-		//	// If the product does not exist, return a not found error or redirect to an error page
-		//	return NotFound();
-		//}
-	}
+        [HttpPost]
+        public IActionResult InsertComment(string review, int prodID)
+        {
+
+            var comment = new Comment { Text = review, 
+                                        Date = DateTime.Now, 
+                                        AppUserId = User.GetUserId(), 
+                                        Product = ProductRepo.GetById(prodID) };
+
+            commentsRepo.AddComment(comment);
+            return View("~/Views/Product/GetProduct.cshtml",
+            new ProductViewModel
+            {
+                    Products = new List<Product> { ProductRepo.GetById(prodID) },
+                    Comments =  commentsRepo.GetAllComments(prodID) ,
+                    
+            });
+        }
+
+    }
 }

@@ -24,6 +24,7 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<ICategoriesRepo, CategoryRepo>();
             builder.Services.AddScoped<IBrandRepo, BrandRepo>();
+            builder.Services.AddScoped<ICommentsRepo, CommentsRepo>();
 
             // 2.Adding identity to the container
             builder.Services.AddIdentity<AppUser, AppRole>()
@@ -64,9 +65,8 @@ namespace OnlineShoppingApp
             app.UseStaticFiles();
 
             app.UseRouting();
-
             // 5. add authentication
-           app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

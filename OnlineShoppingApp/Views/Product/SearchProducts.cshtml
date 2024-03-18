@@ -1,0 +1,124 @@
+﻿ @model OnlineShoppingApp.ViewModels.ProductViewModel
+
+<!-- Header Section -->
+<h1>All Products</h1>
+<head>
+    <meta charset="utf-8">
+    <title>MultiShop - Online Shop Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="/images/favicon.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="./lib/animate/animate.min.css" rel="stylesheet">
+    <link href="./lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="./css/style.css" rel="stylesheet">
+  
+
+</head>
+
+
+
+<body>
+<div class="container-fluid pb-5 mt-2">
+    <div class="row px-xl-5">
+        @foreach (var item in Model.Products)
+        {
+            <div class="col-lg-5 mb-30">
+                <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner bg-light">
+                        @if (item.Images != null)
+                        {
+                            int index = 0;
+                            foreach (var img in item.Images)
+                            {
+                                <div class="carousel-item @(index == 0 ? "active" : "")">
+                                    <img class="w-100 h-100" src="@img.Source" alt="Image">
+                                </div>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <p>No images available.</p>
+                        }
+                    </div>
+                    <a class="carousel-control-prev" href="#product-carousel" role="button" data-slide="prev">
+                        <i class="fa fa-2x fa-angle-left text-dark"></i>
+                    </a>
+                    <a class="carousel-control-next" href="#product-carousel" role="button" data-slide="next">
+                        <i class="fa fa-2x fa-angle-right text-dark"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-7 h-auto mb-30">
+                <div class="h-100 bg-light p-30">
+                    <h3>@item.Name</h3>
+                    <div class="d-flex mb-3">
+                        <div class="text-primary mr-2">
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star"></small>
+                            <small class="fas fa-star-half-alt"></small>
+                            <small class="far fa-star"></small>
+                        </div>
+                        <small class="pt-1">(99 Reviews)</small>
+                    </div>
+                    <h3 class="font-weight-semi-bold mb-4">$@item.Price</h3>
+                    <p class="mb-4">
+                        @item.Description
+                    </p>
+
+                    <div class="mb-4">
+                        <h6 class="font-weight-semi-bold d-inline-block">Category: </h6>
+                        <p class="d-inline-block">@item.Category.Name</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="font-weight-semi-bold d-inline-block">Brand: </h6>
+                        <p class="d-inline-block">@item.Brand.Name</p>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-4 pt-2">
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary px-3">
+                            <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+                <div class="col-12">
+                    <hr class="my-5">
+                </div>
+
+        }
+    </div>
+</div>
+</body>

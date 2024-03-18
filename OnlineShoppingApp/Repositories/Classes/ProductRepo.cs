@@ -2,6 +2,7 @@
 using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
+using System.Data.OleDb;
 using System.Runtime.InteropServices;
 
 namespace OnlineShoppingApp.Repositories.Classes
@@ -25,37 +26,77 @@ namespace OnlineShoppingApp.Repositories.Classes
             return Context.Products.Include(p => p.Category).Include(p => p.Brand).Include(p=>p.Images).FirstOrDefault(p => p.Id == id);
         }
 
+       
         public void Edit(int id, Product newProduct)
         {
-            // Retrieve the existing product by its id
+            // Retrieve the existing product by its id including related images
             Product oldProd = GetById(id);
 
             // If the product exists
             if (oldProd != null)
             {
                 // Update the properties of the existing product with the new values
-                oldProd.categoryId = newProduct.categoryId;
-                oldProd.brandId = newProduct.brandId;
+                oldProd.Name = newProduct.Name;
                 oldProd.Description = newProduct.Description;
                 oldProd.Price = newProduct.Price;
-                oldProd.Name = newProduct.Name;
+                oldProd.categoryId = newProduct.categoryId;
+                oldProd.brandId = newProduct.brandId;
 
-                if (newProduct.Images != null && newProduct.Images.Any())
+                // Update the list of image URLs
+                if (newProduct.ImageUrl != null && newProduct.ImageUrl.Any())
                 {
-                    foreach (var img in oldProd.Images.ToList()) 
+                    foreach (var imageUrl in newProduct.ImageUrl)
                     {
-                        Context.Images.Remove(img);
-                    }      
-                    // Add new images to the product
-                    foreach (var img in newProduct.Images)
+                        // Check if the URL already exists in the database for this product
+                        var existingImage = oldProd.Images.FirstOrDefault(img => img.Source == imageUrl);
+                        if (existingImage == null)
+                        {
+                            // Add new images to the product
+                            oldProd.Images.Add(new Images { Source = imageUrl, ProductId = oldProd.Id });
+                        }
+                    }
+
+                    // Remove images that are no longer present in the submitted list
+                    foreach (var image in oldProd.Images.ToList())
                     {
-                        var image = new Images { Source = img.Source, IsMain = img.IsMain, ProductId = oldProd.Id };
-                    //  oldProd.Images.Add(new Images { Source = img.Source, IsMain = img.IsMain, ProductId = oldProd.Id });
-                        Context.Images.Add(img);
-                    } 
+                        if (!newProduct.ImageUrl.Contains(image.Source))
+                        {
+                            // Check if the image to be removed is the main image
+                            if (image.IsMain == 1)
+                            {
+                                // Find the next image after the one to be removed
+                                var nextImage = oldProd.Images
+                                    .Where(img => img.Id != image.Id) // Exclude the image to be removed
+                                    .FirstOrDefault();
+
+                              
+
+                                // If there's a next image, set it as the main image
+                                if (nextImage != null)
+                                {
+                                    nextImage.IsMain = 1;
+                                }
+                                //else
+                                //{
+                                //    // If there's no next image, set the first image of the updated product as the main image
+                                //    var firstImage = oldProd.Images.FirstOrDefault();
+                                //    if (firstImage != null)
+                                //    {
+                                //        firstImage.IsMain = 1;
+                                //    }
+                                //}
+                            }
+
+                            // Remove the image from the product
+                            Context.Images.Remove(oldProd.Images.FirstOrDefault(i=>i.Source==image.Source&& i.ProductId==oldProd.Id));
+                            oldProd.Images.Remove(image);
+                        }
+                    }
+
+
                 }
 
-                    Context.SaveChanges();
+                Context.SaveChanges();
             }
         }
 
@@ -97,12 +138,29 @@ namespace OnlineShoppingApp.Repositories.Classes
             }
         }
 
-        public void Delete(int id)
+        public void Delete(Product product)
         {
-            Product oldProd = GetById(id);
-            Context.Products.Remove(Context.Products.FirstOrDefault(p=>p.Id==id));
+            //Product oldProd = GetById(id);
+            Context.Products.Remove(product);
             Context.SaveChanges();
         }
+
+		public List<Product> GetByName(string Name)
+		{
+			return Context.Products.Include(p => p.Category).Include(p => p.Brand)
+				.Include(p => p.Images).Where(p => p.Name.StartsWith(Name) ||
+                p.Category.Name.StartsWith(Name) ||  p.Brand.Name.StartsWith(Name) ||  
+                  p.Description.Contains(Name) ).ToList();
+
+        }
+
+        
+
+
+        public List<Product> GetProductsStartingWith(string search)
+		{
+            return GetByName(search);
+		}
 
 		
 	}
