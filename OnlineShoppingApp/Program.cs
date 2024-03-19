@@ -27,11 +27,11 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<ICommentsRepo, CommentsRepo>();
             builder.Services.AddScoped<IRateRepo, RateRepo>();
             builder.Services.AddScoped<IBuyerRepo, BuyerRepo>();
-
-
-
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();
+            builder.Services.AddScoped<ISellerRepo, SellerRepo>();
+
+
             // 2.Adding identity to the container
             builder.Services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<ShoppingContext>()

@@ -29,12 +29,12 @@ namespace OnlineShoppingApp.ViewModels
 
 
         public UserType UserType { get; set; } = UserType.Buyer;
-        //// For buyers
-        //public DateOnly? DOB { get; set; }
+    //// For buyers
+    //public DateOnly? DOB { get; set; }
 
-        //// For sellers
-        //public string? Description { get; set; }
+    //// For sellers
+    //public string? Description { get; set; }
 
-        //public string? BusinessName { get; set; }
-    }
+    //public string? BusinessName { get; set; }
+}
 }

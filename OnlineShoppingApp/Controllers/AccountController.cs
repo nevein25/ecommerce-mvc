@@ -202,6 +202,7 @@ namespace OnlineShoppingApp.Controllers
 						Email = model.Email,
 						FirstName = model.FirstName,
 						LastName = model.LastName,
+						PhoneNumber = "+20 0"
 					};
 				}
 				else
@@ -212,7 +213,8 @@ namespace OnlineShoppingApp.Controllers
 						Email = model.Email,
 						FirstName = model.FirstName,
 						LastName = model.LastName,
-					};
+                        PhoneNumber = "+20 0"
+                    };
 				}
 
 				await _userManager.CreateAsync(user, model.Password);

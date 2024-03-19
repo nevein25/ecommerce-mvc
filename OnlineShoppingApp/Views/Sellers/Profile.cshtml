@@ -1,8 +1,10 @@
-﻿@model OnlineShoppingApp.ViewModels.UpdateProfileViewModel
+﻿@model OnlineShoppingApp.ViewModels.UpdateSellerProfileViewModel
 
 <link rel="stylesheet" href="~/phone/css/intlTelInput.css">
 
 <link rel="stylesheet" href="~/css/UserProfile/profile.css">
+<link rel="stylesheet" href="~/css/tooltip/tooltip.css">
+
 
 <section id="contact-us" class="contact-us section">
     <div class="container">
@@ -24,23 +26,24 @@
 
                                 <div class="col-lg-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="FirstName" class="control-label">First Name</label>
-                                        <input asp-for="FirstName" class="form-control" />
-                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        <label asp-for="BusinessName" class="control-label">Business Name</label>
+                                        <input asp-for="BusinessName" class="form-control" />
+                                        <span asp-validation-for="BusinessName" class="text-danger"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="LastName" class="control-label">Last Name</label>
-                                        <input asp-for="LastName" class="form-control" />
-                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                        <label asp-for="VAT" class="control-label">VAT</label>
+                                        <input type="number" asp-for="VAT" class="form-control" />
+                                        <span asp-validation-for="VAT" class="text-danger"></span>
                                     </div>
                                 </div>
+
                                 <div class="col-lg-6 col-12">
                                     <div class="form-group">
                                         <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
-                                        <input asp-for="PhoneNumber" class="form-control" id="phone" />
+                                        <input asp-for="PhoneNumber" class="form-control" id="phone"  />
                                         <br />
                                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                         <input type="hidden" id="phoneNumberCountryCode" asp-for="PhoneNumberDb" value="@Model.PhoneNumberDb" />
@@ -50,31 +53,37 @@
 
                                 <div class="col-lg-6 col-12">
                                     <div class="form-group">
-                                        <label asp-for="DOB" class="control-label">Date of Birth</label>
-                                        <input type="date" asp-for="DOB" class="form-control" max="2015-12-31" />
-                                        <span asp-validation-for="DOB" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-
-
-                                <div class="col-lg-6 col-12">
-                                    <div class="form-group">
                                         <label asp-for="ImageFile"> Upload Image </label>
                                         <input type="file" asp-for="ImageFile" />
                                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                                     </div>
                                 </div>
+                                <div class="col-lg-6 col-12">
+                                    <div class="form-group">
+                                        <label asp-for="PaperFile"> Upload Paper to verify you business </label>
+                                        <partial name="_tooltip" model="Model" />
+                                        <input type="file" asp-for="PaperFile" />
+                                        <span asp-validation-for="PaperFile" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group message">
+                                        <label asp-for="Description" class="control-label">Description</label>
+                                        <textarea asp-for="Description" class="form-control"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+
+                                    </div>
+                                </div>
                                 <div class="col-lg-6 col-12 btn-wrapper">
                                     <div class="form-group">
-                                        <input type="submit" value="Save" class="btn btn-primary submit-btn" />
+                                        <input type="submit" value="Save" class="btn btn-primary submit-btn" style="left: 259px;bottom: -34px;" />
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-              
+
             </div>
         </div>
     </div>
@@ -135,8 +144,4 @@
  *@
 <script src="~/phone/js/intlTelInput.js"></script>
 
-
 <script src="~/js/UserProfile/profile.js"></script>
-
-
-

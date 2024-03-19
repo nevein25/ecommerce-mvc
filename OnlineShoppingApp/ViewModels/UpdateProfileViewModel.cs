@@ -7,7 +7,7 @@ namespace OnlineShoppingApp.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? PhoneNumberDb { get; set; }
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "The phone number must be 11 digits long.")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "The phone number must be 11 digits.")]
 
         public string PhoneNumber { get; set; }
 
