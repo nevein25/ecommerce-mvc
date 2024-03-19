@@ -31,7 +31,8 @@ namespace OnlineShoppingApp.Repositories.Classes
                     VAT = seller.VAT,
                     Image = seller.Image,
                     AvgRating = GetAvgRateForSeller(sellerId),
-                    IsVerified = seller.IsVerified
+                    IsVerified = seller.IsVerified,
+                    Paper = seller.Paper,
                 };
 
             }
@@ -113,7 +114,12 @@ namespace OnlineShoppingApp.Repositories.Classes
             }
 
         }
-        public int GetAvgRateForSeller(int sellerId)
+
+        public List<Seller> GetNotVerifiedSeller()
+        {
+            return _context.Sellers.OrderByDescending(s => s.Id).Where(s => !s.IsVerified).ToList();
+        }
+        private int GetAvgRateForSeller(int sellerId)
         {
             var rates = _context.ProductSellers
                         .Where(ps => ps.SellerId == sellerId)
@@ -128,5 +134,22 @@ namespace OnlineShoppingApp.Repositories.Classes
             return (int)Math.Round(avgRating);
 
         }
+
+        public bool VerifySeller(int sellerId)
+        {
+            Seller seller = _context.Sellers.Where(s => s.Id == sellerId).FirstOrDefault();
+            try
+            {
+                seller.IsVerified = true;
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+
+            }
+        }
+
     }
 }
