@@ -16,6 +16,27 @@ namespace OnlineShoppingApp.Repositories.Classes
             _context = context;
             _hostingEnvironment = hostingEnvironment;
         }
+
+        public GetSellerProfileViewModel GetProfileDataAsViewer(int sellerId)
+        {
+            Seller seller = _context.Sellers.Where(b => b.Id == sellerId).FirstOrDefault();
+            GetSellerProfileViewModel sellerProfile = null;
+            if (seller != null)
+            {
+                sellerProfile = new()
+                {
+                    PhoneNumber = seller.PhoneNumber,
+                    Description = seller.Description,
+                    BusinessName = seller.BusinessName,
+                    VAT = seller.VAT,
+                    Image = seller.Image,
+                    AvgRating = GetAvgRateForSeller(sellerId),
+                    IsVerified = seller.IsVerified
+                };
+
+            }
+            return sellerProfile;
+        }
         public UpdateSellerProfileViewModel GetProfileData(int sellerId)
         {
             Seller seller = _context.Sellers.Where(b => b.Id == sellerId).FirstOrDefault();
@@ -27,7 +48,7 @@ namespace OnlineShoppingApp.Repositories.Classes
                     PhoneNumber = seller.PhoneNumber,
                     Paper = seller.Paper,
                     Description = seller.Description,
-                    BusinessName  = seller.BusinessName,
+                    BusinessName = seller.BusinessName,
                     VAT = seller.VAT,
                     Image = seller.Image,
                 };
@@ -90,6 +111,21 @@ namespace OnlineShoppingApp.Repositories.Classes
             {
                 return false;
             }
+
+        }
+        public int GetAvgRateForSeller(int sellerId)
+        {
+            var rates = _context.ProductSellers
+                        .Where(ps => ps.SellerId == sellerId)
+                        .Join(
+                            _context.Rates,
+                            ps => ps.ProductId,
+                            r => r.ProductId,
+                            (ps, r) => r.NumOfStars
+                        );
+
+            double avgRating = rates.Average();
+            return (int)Math.Round(avgRating);
 
         }
     }

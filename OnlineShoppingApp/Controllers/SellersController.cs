@@ -8,16 +8,22 @@ namespace OnlineShoppingApp.Controllers
     public class SellersController : Controller
     {
         private ISellerRepo _sellerRepo;
+        private IRateRepo _rateRepo;
 
-        public SellersController(ISellerRepo sellerRepo)
+        public SellersController(ISellerRepo sellerRepo, IRateRepo rateRepo)
         {
             _sellerRepo = sellerRepo;
+            _rateRepo = rateRepo;
         }
 
-        public IActionResult Index()
+
+        [HttpGet]
+        public IActionResult GetProfileData(int Id)
         {
-            return View();
+            return View(_sellerRepo.GetProfileDataAsViewer(Id));
         }
+
+
 
         [HttpGet]
         public IActionResult Profile()
