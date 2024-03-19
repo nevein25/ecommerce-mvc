@@ -10,23 +10,23 @@ using System.Security.Claims;
 
 namespace OnlineShoppingApp.Services
 {
-    public class CartService:ICartService
+    public class CartService : ICartService
     {
         private string CartKey = $"UserCart{UserHelper.LoggedinUserId}";
-		// int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-		private readonly IHttpContextAccessor _httpContextAccessor;
+        // int id= int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public CartService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public void AddToCart(CartItemViewModel newItem)
         {
             // Retrieve existing cart items from cookies
             var existingCart = GetCartItems();
 
             // Check if the item already exists in the cart
-             var existingItem = existingCart.FirstOrDefault(item => item.Id == newItem.Id);
+            var existingItem = existingCart.FirstOrDefault(item => item.Id == newItem.Id);
 
             //// Update properties of the existing item
             //existingItem.Quantity = newItem.Quantity; // For example, update the quantity
@@ -40,7 +40,7 @@ namespace OnlineShoppingApp.Services
                 // Save the updated cart items to cookies
                 SaveCartItems(existingCart);
             }
-         
+
         }
 
 
@@ -63,13 +63,12 @@ namespace OnlineShoppingApp.Services
 
         public List<CartItemViewModel> GetCartItems()
         {
-        
+
             if (UserHelper.LoggedinUserId != 0)
             {
-
-            var context = _httpContextAccessor.HttpContext;
-            var cartJson = context.Request.Cookies[CartKey];
-            return cartJson != null ? JsonConvert.DeserializeObject<List<CartItemViewModel>>(cartJson) : new List<CartItemViewModel>();
+                var context = _httpContextAccessor.HttpContext;
+                var cartJson = context.Request.Cookies[CartKey];
+                return cartJson != null ? JsonConvert.DeserializeObject<List<CartItemViewModel>>(cartJson) : new List<CartItemViewModel>();
             }
             return new List<CartItemViewModel> { };
         }
@@ -85,13 +84,13 @@ namespace OnlineShoppingApp.Services
             });
         }
 
-       public void UpdateCart(int id, int Quantity)
+        public void UpdateCart(int id, int Quantity)
         {
             // Retrieve existing cart items from cookies
             var existingCart = GetCartItems();
 
             // Check if the item already exists in the cart
-            var existingItem = existingCart.FirstOrDefault(item => item.Id ==id);
+            var existingItem = existingCart.FirstOrDefault(item => item.Id == id);
 
             // Update properties of the existing item
             existingItem.Quantity = Quantity; // For example, update the quantity
@@ -101,36 +100,36 @@ namespace OnlineShoppingApp.Services
 
         }
 
-		public CartItemViewModel GetCartItem(int id)
-		{
-			var existingCart = GetCartItems();
+        public CartItemViewModel GetCartItem(int id)
+        {
+            var existingCart = GetCartItems();
 
-			// Check if the item already exists in the cart
-			var existingItem = existingCart.FirstOrDefault(item => item.Id == id);
-            
+            // Check if the item already exists in the cart
+            var existingItem = existingCart.FirstOrDefault(item => item.Id == id);
+
             return existingItem;
-		}
+        }
 
-		public int GetTotal()
-		{
+        public int GetTotal()
+        {
             var total = 0;
-			var existingCart = GetCartItems();
+            var existingCart = GetCartItems();
 
-			foreach(var item in existingCart)
+            foreach (var item in existingCart)
             {
-                 total += (int) (item.Quantity*item.Price);
+                total += (int)(item.Quantity * item.Price);
             }
             return total;
-		}
+        }
 
-		public int GetTotalPerProduct(int productId)
-		{
-			var existingCart = GetCartItems();
+        public int GetTotalPerProduct(int productId)
+        {
+            var existingCart = GetCartItems();
 
-			// Check if the item already exists in the cart
-			var existingItem = existingCart.FirstOrDefault(item => item.Id == productId);
+            // Check if the item already exists in the cart
+            var existingItem = existingCart.FirstOrDefault(item => item.Id == productId);
             var productTotal = (int)(existingItem.Quantity * existingItem.Price);
             return productTotal;
-		}
-	}
+        }
+    }
 }

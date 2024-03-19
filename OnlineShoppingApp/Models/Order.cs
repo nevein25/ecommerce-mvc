@@ -13,10 +13,10 @@ namespace OnlineShoppingApp.Models
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public Address ShippingAddress { get; set; }
         public DeliveryMethod? DeliveryMethod { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; }
         public decimal SubTotal { get; set; }
         [NotMapped]
         public decimal Total { get { return SubTotal + DeliveryMethod.DeliveryCost; } }
-        public string PaymentIntentId { get; set; }
+        public string? PaymentIntentId { get; set; }
     }
 }

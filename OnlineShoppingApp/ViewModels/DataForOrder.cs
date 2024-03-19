@@ -15,7 +15,7 @@ namespace OnlineShoppingApp.ViewModels
         public Address OrderAddress { get; set; }
         public decimal SubTotal { get; set; }
 		public decimal ShippingPrice { get; set; }
-        public decimal ?total {  get; set; }
+        public decimal? total {  get; set; }
 		
 
 	}

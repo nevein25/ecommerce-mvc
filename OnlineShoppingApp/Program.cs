@@ -27,9 +27,9 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<ICommentsRepo, CommentsRepo>();
             builder.Services.AddScoped<IRateRepo, RateRepo>();
             builder.Services.AddScoped<IBuyerRepo, BuyerRepo>();
-
-
-
+            builder.Services.AddScoped<IOrderRepo, OrderRepo>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderItemRepo, OrderItemRepo>();
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();
             // 2.Adding identity to the container
