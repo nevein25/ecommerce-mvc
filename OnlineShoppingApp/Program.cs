@@ -42,6 +42,7 @@ namespace OnlineShoppingApp
             builder.Services.AddControllersWithViews();
            builder.Services.AddHttpContextAccessor();
            builder.Services.AddScoped<CartService>();
+           
 
 
             // 3. adding google authentication to the container

@@ -2,6 +2,7 @@
 using OnlineShoppingApp.Extentions;
 using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
+using OnlineShoppingApp.Repositories.Classes;
 using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.ViewModels;
@@ -81,15 +82,19 @@ namespace OnlineShoppingApp.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult ProceedToAddress(int newss)
+
+        [HttpPost]
+        public IActionResult ProceedToAddress(int DeliveryMethodId)
         {
-            BuyerCartViewModel buyerCart = new BuyerCartViewModel()
+            DataForOrder buyerCartData = new DataForOrder()
             {
                 BuyerId = User.GetUserId(),
                 Items = _cartService.GetCartItems(),
-                DeliveryMethodId = newss
-            };
-            return RedirectToAction("Index", "Address");
+                DeliveryMethodId = DeliveryMethodId,
+                SubTotal=_cartService.GetTotal(),
+				ShippingPrice=_deliveryMethod.GetbyId(DeliveryMethodId).DeliveryCost,
+			};
+            return RedirectToAction("Index", "Address", buyerCartData);
         }
     }
 }

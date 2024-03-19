@@ -12,13 +12,14 @@ namespace OnlineShoppingApp.Controllers
 	public class AddressController : Controller
 	{
 		private readonly IAddressRepo _addressRepo;
-
+        private DataForOrder _dataForOrder =new DataForOrder();
 		public AddressController(IAddressRepo addressRepo)
         {
 			_addressRepo = addressRepo;
+			
 		}
         // GET: AddressController
-        public ActionResult Index()
+        public ActionResult Index(DataForOrder buyerCartData)
 		{
 			var buyerAddress = _addressRepo.GetAddressByBuyerId(UserHelper.LoggedinUserId);
 			var addressList = buyerAddress.Select(Ad => new SelectListItem
@@ -26,9 +27,21 @@ namespace OnlineShoppingApp.Controllers
 				Value = Ad.Id.ToString(),
 				Text = $"{Ad.BuildingNumber} - {Ad.Street} - {Ad.City} - {Ad.Country}"
 			}).ToList();
-			ViewBag.AddressList = new SelectList( addressList, "Value", "Text");
-			ViewBag.Buyer = _addressRepo.GetUser(UserHelper.LoggedinUserId);
-			return View();
+            buyerCartData.AddressList = new SelectList( addressList, "Value", "Text");
+            buyerCartData.User = _addressRepo.GetUser(UserHelper.LoggedinUserId);
+
+            _dataForOrder = buyerCartData;
+            //{ 
+            //    BuyerId=buyerCartData.BuyerId,
+            //    User=buyerCartData.User,
+            //    Items=buyerCartData.Items,
+            //    DeliveryMethodId=buyerCartData.DeliveryMethodId,
+            //    AddressList=buyerCartData.AddressList,
+            //    AddressId=buyerCartData.AddressId,
+
+            //};
+		   // ViewBag.buyerCart = buyerCart;
+			return View(buyerCartData);
 		}
 
 
@@ -51,7 +64,7 @@ namespace OnlineShoppingApp.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
-        public ActionResult AddNewAddress(AddAddressViewModel viewModel)
+        public ActionResult AddNewAddress(AddAddressViewModel viewModel, decimal ShippingPrice, decimal SubTotal, int DeliveryMethodId)
         {
             if (viewModel != null)
             {
@@ -69,20 +82,54 @@ namespace OnlineShoppingApp.Controllers
                 _addressRepo.Insert(address);
             }
             Address lastAdrs = _addressRepo.GetAddresses().Last();
+            _dataForOrder.OrderAddress = lastAdrs;
+            _dataForOrder.User = _addressRepo.GetUser(UserHelper.LoggedinUserId);
+            _dataForOrder.ShippingPrice = ShippingPrice;
+            _dataForOrder.SubTotal = SubTotal;
+            _dataForOrder.DeliveryMethodId = DeliveryMethodId;
+            _dataForOrder.total = _dataForOrder.SubTotal + _dataForOrder.ShippingPrice;
+            //{
+            //	BuyerId = lastAdrs.BuyerId,
+            //	BuildingNumber = lastAdrs.BuildingNumber,
+            //	Street = lastAdrs.Street,
+            //	City = lastAdrs.City,
+            //	Country = lastAdrs.Country,
+            //             Id= lastAdrs.Id,
+            //             IsMain= lastAdrs.IsMain,
+            //};
 
-            return RedirectToAction(nameof(CheckoutStaticData),lastAdrs);
+
+            return View("CheckoutStaticData", _dataForOrder);
         }
 
-        public ActionResult GetExistingAddressId(int id)
+        public ActionResult GetExistingAddressId(int AddressId,decimal ShippingPrice,decimal SubTotal,int DeliveryMethodId)
         {
-            Address extAdrs = _addressRepo.GetAddressById(id);
-            return RedirectToAction(nameof(CheckoutStaticData), extAdrs);
+            Address extAdrs = _addressRepo.GetAddressById(AddressId);
+            _dataForOrder.OrderAddress = extAdrs;
+            _dataForOrder.User = _addressRepo.GetUser(UserHelper.LoggedinUserId);
+            _dataForOrder.ShippingPrice = ShippingPrice;
+            _dataForOrder.SubTotal = SubTotal;
+            _dataForOrder.DeliveryMethodId = DeliveryMethodId;
+            _dataForOrder.total = _dataForOrder.SubTotal + _dataForOrder.ShippingPrice;
+            //{
+            //    Id = extAdrs.Id,
+            //    BuyerId = extAdrs.BuyerId,
+            //    BuildingNumber = extAdrs.BuildingNumber,
+            //    Street = extAdrs.Street,
+            //    City = extAdrs.City,
+            //    Country = extAdrs.Country,
+            //    IsMain = extAdrs.IsMain,
+            //};
+
+            //return RedirectToAction(nameof(CheckoutStaticData),_dataForOrder);
+            return View("CheckoutStaticData", _dataForOrder);
 
         }
-        public ActionResult CheckoutStaticData(Address address)
+        public ActionResult CheckoutStaticData(DataForOrder DataForOrder)
         {
-			ViewBag.Buyer = _addressRepo.GetUser(UserHelper.LoggedinUserId);
-			return View(address);
+            //ViewBag.Buyer = _addressRepo.GetUser(UserHelper.LoggedinUserId);
+            Console.WriteLine(DataForOrder);
+			return View(DataForOrder);
         }
     }
 }

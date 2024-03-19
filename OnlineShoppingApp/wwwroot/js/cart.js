@@ -1,5 +1,10 @@
 ﻿// Get all radio buttons with name "news"
+
 var radioButtons = document.querySelectorAll('input[name="news"]');
+var deliveryitem = document.querySelector('input[name="news"]:checked').value;
+ document.getElementById('selectedDeliveryId').value = deliveryitem;
+
+
 
 // Add event listener to each radio button
 radioButtons.forEach(function (radio) {
@@ -11,7 +16,8 @@ radioButtons.forEach(function (radio) {
 
             // Update the selected shipping option in the <li> element
             document.getElementById("selected-shipping").innerText = '$ ' + deliveryCost;
-            document.getElementById('selectedDeliveryId').value = this.value;
+            deliveryitem = this.value;
+            document.getElementById('selectedDeliveryId').value = deliveryitem
             console.log(this.value);
             console.log(document.getElementById('selectedDeliveryId').value);
             // Update the "You Pay" total
@@ -78,8 +84,13 @@ function checkout(count) {
 //}
 
 function sendCheckedId() {
+    // Get the currently checked radio button value
     var checkedId = document.querySelector('input[name="news"]:checked').value;
 
+    // Update the value of selectedDeliveryId
+    document.getElementById('selectedDeliveryId').value = checkedId;
+
+    // Send the checkedId to the server
     fetch('@Url.Action("ProceedToAddress", "Cart")', {
         method: 'POST',
         headers: {
@@ -96,3 +107,4 @@ function sendCheckedId() {
             console.error('Error:', error);
         });
 }
+

@@ -6,5 +6,6 @@ namespace OnlineShoppingApp.Repositories.Interfaces
 	{
 		public List<DeliveryMethod> GetAll();
 		public DeliveryMethod GetbyId(int id);
-	}
+        public DeliveryMethod GetbyName(string name);
+    }
 }
