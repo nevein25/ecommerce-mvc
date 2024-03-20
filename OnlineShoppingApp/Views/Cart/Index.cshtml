@@ -1,6 +1,8 @@
 ﻿@using OnlineShoppingApp.Services
 @using OnlineShoppingApp.Services.Interfaces
 @using OnlineShoppingApp.ViewModels
+@inject OnlineShoppingApp.Repositories.Interfaces.IDeliveryMethodsRepo DeliveryMethodRepo
+
 @model List<OnlineShoppingApp.ViewModels.CartItemViewModel>
 @{
     var httpContextAccessor = new HttpContextAccessor();
@@ -9,6 +11,7 @@
     List<CartItemViewModel> items = Model;
     int count = items.Count;
     var deliveryitem = 0;
+    int DeliveryMethodId = DeliveryMethodRepo.GetbyName("Free").Id;
 
 }
 <h1>Cart Items</h1>
@@ -99,7 +102,7 @@
                                         <br />
                                         @foreach (var item in deliveryList)
                                         {
-                                            if (item.Id == 4)
+                                            if (item.ShortName=="Free")
                                             {
                                                 <input class="font-weight-bold " name="news" type="radio" value="@item.Id" data-delivery-cost="@item.DeliveryCost" checked />
                                                 <span class="p-2">@item.ShortName</span>
@@ -118,7 +121,7 @@
                                 </div>
                             </div>
 
-                            <input type="text" id="selectedDeliveryId" name="newss" value="" hidden>
+                            <input type="text" id="selectedDeliveryId" name="DeliveryMethodId" value="@DeliveryMethodId" hidden>
 
 
                             <div class="col-lg-4 col-md-7 col-12">

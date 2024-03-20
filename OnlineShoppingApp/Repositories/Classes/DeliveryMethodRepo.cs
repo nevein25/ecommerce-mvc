@@ -7,13 +7,15 @@ namespace OnlineShoppingApp.Repositories.Classes
 	public class DeliveryMethodRepo : IDeliveryMethodsRepo
 	{
 		private readonly ShoppingContext _shoppingContext;
-
-		public DeliveryMethodRepo(ShoppingContext shoppingContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public DeliveryMethodRepo(ShoppingContext shoppingContext)
         {
 			_shoppingContext = shoppingContext;
 		}
 
-		public List<DeliveryMethod> GetAll()
+       
+
+        public List<DeliveryMethod> GetAll()
 		{
 			return _shoppingContext.DeliveryMethods.ToList();
 		}
@@ -22,5 +24,10 @@ namespace OnlineShoppingApp.Repositories.Classes
 		{
 			return _shoppingContext.DeliveryMethods.Find(id);
 		}
-	}
+
+        DeliveryMethod IDeliveryMethodsRepo.GetbyName(string name)
+        {
+             return _shoppingContext.DeliveryMethods.FirstOrDefault(dm => dm.ShortName == name);
+        }
+    }
 }

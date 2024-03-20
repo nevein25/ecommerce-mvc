@@ -30,6 +30,10 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 
+            builder.Services.AddScoped<IOrderRepo, OrderRepo>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IOrderItemRepo, OrderItemRepo>();
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();
             // 2.Adding identity to the container
@@ -42,6 +46,7 @@ namespace OnlineShoppingApp
             builder.Services.AddControllersWithViews();
            builder.Services.AddHttpContextAccessor();
            builder.Services.AddScoped<CartService>();
+           
 
 
             // 3. adding google authentication to the container
