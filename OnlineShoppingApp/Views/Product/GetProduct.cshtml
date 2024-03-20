@@ -78,7 +78,7 @@
                                 }
                             }
                         </div>
-                        <small class="pt-1">(99 Reviews)</small>
+                        <small class="pt-1">(@Model?.Comments?.Count Reviews)</small>
                     </div>
                     <h3 class="font-weight-semi-bold mb-4">$@Model.Price</h3>
                     <p class="mb-4">
@@ -183,15 +183,7 @@
                                 </div>
                             </div>
                         </div>
-                        @*  @await Html.PartialAsync("CommentsPartialView") *@
-
-
-
-
-
-
-
-
+                      
 
 
 
@@ -231,7 +223,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="mb-4">Leave a review</h4>
-                                    <small>Your email address will not be published. Required fields are marked *</small>
+                                    @* <small>Your email address will not be published. Required fields are marked *</small> *@
                                     <div class="d-flex my-3">
                                         <partial name="_RatingPartialView" model="Model" />
                                     </div>
@@ -241,15 +233,6 @@
                                             <label for="message">Your Review *</label>
                                             <textarea id="message" cols="30" rows="5" class="form-control" name="review"></textarea>
                                         </div>
-
-                                        @*  <div class="form-group">
-                                        <label for="name">Your Name *</label>
-                                        <input type="text" class="form-control" id="name" name="userName">
-                                        </div>
-                                        <div class="form-group">
-                                        <label for="email">Your Email *</label>
-                                        <input type="email" class="form-control" id="email" name="userEmail">
-                                        </div> *@
 
                                         <div class="form-group mb-0">
                                             <input type="submit" value="Send Your Review" class="btn btn-primary px-3">

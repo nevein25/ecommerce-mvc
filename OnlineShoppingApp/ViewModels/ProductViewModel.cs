@@ -8,7 +8,7 @@ namespace OnlineShoppingApp.ViewModels
 		public List<Category> Categories { get; set; } = new List<Category>();
 		public List<Brand> Brands { get; set; } = new List<Brand>();
 		public List<string> ImageUrls { get; set; } = new List<string>();
-
-		public List<Comment> Comments { get; set; }=new List<Comment>();
+		public List<Comment> Comments { get; set; }= new List<Comment>();
+		public List<Product> BestSellerProduct { get; set; }= new List<Product>();
 	}
 }

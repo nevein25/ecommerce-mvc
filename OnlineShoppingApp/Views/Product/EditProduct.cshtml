@@ -54,6 +54,8 @@
                 </div>
                 
             </div>
+            <br />
+            <br />
             <div class="form-group">
                 <label asp-for="brandId" class="control-label">Choose Your Brand</label>
                 <div>
@@ -63,6 +65,8 @@
                 </div>
               
             </div>
+            <br />
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -74,23 +78,7 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Add functionality to add more image URLs
-            $('#addImageUrl').click(function () {
-                var imageUrlInput = '<div class="input-group mb-2">' +
-                    '<input type="text" class="form-control" name="ImageUrl" />' +
-                    '<div class="input-group-append">' +
-                    '<button type="button" class="btn btn-danger remove-url">Remove</button>' +
-                    '</div>' +
-                    '</div>';
-                $('#imageUrlsContainer').append(imageUrlInput);
-            });
-
-            // Add functionality to remove image URLs
-            $(document).on('click', '.remove-url', function () {
-                $(this).closest('.input-group').remove();
-            });
-        });
+    <script src="~/js/Edit.js">
+      
     </script>
 

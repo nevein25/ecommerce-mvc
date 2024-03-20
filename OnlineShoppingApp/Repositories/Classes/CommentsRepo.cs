@@ -33,7 +33,7 @@ namespace OnlineShoppingApp.Repositories.Classes
         {
            // var comments = context.Comments.Include(c => c.Product).Include(c => c.AppUser).ToList();
           
-           return context.Comments.Include(c=>c.Product).Include(c=>c.AppUser).ToList();
+           return context.Comments.Include(c=>c.Product).Include(c=>c.AppUser).Where(c=>c.ProductId==ProdID).ToList();
         }
 
        

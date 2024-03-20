@@ -7,7 +7,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="InsertNewProduct">
+        <form asp-controller="Product" asp-action="InsertNewProduct" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -24,7 +24,7 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group"><label class="control-label">Enter Image Url</label>
+           @*  <div class="form-group"><label class="control-label">Enter Image Url</label>
                 <div id="imageUrlsContainer">
                     <div class="input-group mb-2">
                     <input type="text" class="form-control" name="ImageUrl" />
@@ -32,17 +32,34 @@
                     </div>
                 </div>
                     <button type="button" class="btn btn-primary mt-2" id="addImageUrl">Add Image Url</button>
+            </div> *@
+
+            <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label">Upload Images</label>
+                <input type="file" id="ImageUrl" multiple class="form-control" />
             </div>
+@* 
+            <div class="form-group">
+                <label for="ImageUrl" class="control-label">Upload Images</label>
+                <input type="file" id="ImageUrl" name="ImageUrl" multiple class="form-control" />
+                <span id="selectedImages" class="text-success"></span>
+            </div> *@
+          @*   <input type="hidden" id="selectedImageUrls" name="SelectedImageUrls" /> *@
+
+
+
             <div class="form-group">
                 <label asp-for="categoryId" class="control-label">Choose Your Category</label>
                 <div>
                     <select asp-for="categoryId" class="form-control" asp-items="@ViewBag.category"></select>
                 </div>
             </div>
+            <br />
+            <br />
             <div class="form-group">
                 <label for="brandSelect" class="control-label">Choose Your Brand</label>
                 <div >
-                    <select id="brandSelect" class="form-control" name="brandId">
+                    <select id="brandSelect" class="form-control" name="brandId" onchange="handleBrandChange(this)">
                         @foreach (var brand in ViewBag.brand)
                         {
                             <option value="@brand.Value">@brand.Text</option>
@@ -51,13 +68,16 @@
                     </select>
                 </div>
             </div>
+            <br />
+            <br />
             <div class="form-group" id="otherBrandGroup" style="display:none;">
                 <label for="otherBrand" class="control-label">Enter Your Brand Name</label>
                 <div >
                     <input type="text" id="otherBrand" class="form-control" name="otherBrand" />
                 </div>
             </div>
-
+            <br />
+           
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -72,35 +92,43 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
 
-@* <script src="/js/insert.js"></script> *@
+<script src="~/js/insert.js">
+
+
+</script>
+
 
 <script>
-    $(document).ready(function () {
-        $('#brandSelect').change(function () {
-            if ($(this).val() == '@int.Parse("-1")') {
-                $('#otherBrandGroup').show();
-            } else {
-                $('#otherBrandGroup').hide();
-            }
-        });
 
-        // Add new image URL input field
-        $('#addImageUrl').click(function () {
-            var inputField = '<div class="input-group mb-2">' +
-                '<input type="text" class="form-control" name="ImageUrl" />' +
-                '<div class="input-group-append">' +
-                '<button type="button" class="btn btn-danger remove-url">Remove</button>' +
-                '</div>' +
-                '</div>';
-            $('#imageUrlsContainer').append(inputField);
-        });
-        // Remove image URL input field
-        $(document).on('click', '.remove-url', function () {
-            $(this).closest('.input-group').remove();
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form"); // Get the form element
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            const fileInput = document.getElementById("ImageUrl");
+            const files = fileInput.files;
+            const formData = new FormData();
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append("ImageUrl", files[i]);
+            }
+
+            // Send the form data using fetch or XMLHttpRequest
+            fetch("/Product/InsertNewProduct", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    // Handle response
+                })
+                .catch(error => {
+                    // Handle error
+                });
         });
     });
 
-</script>
+ </script>
 
 
 

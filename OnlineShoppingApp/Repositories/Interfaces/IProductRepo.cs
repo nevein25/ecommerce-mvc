@@ -11,10 +11,14 @@ namespace OnlineShoppingApp.Repositories.Interfaces
         public List<Product> GetByName(string Name);
         public List<Product> GetProductsStartingWith(string search);
 
-		public void Edit(int id,Product newProduct);
+		//public void Edit(int id,Product newProduct);
 
-        public void Insert(Product product);
-        public void Delete(Product product);
+        public void Insert(Product product,int userId, List<IFormFile> ImageUrl);
+        public void Delete(Product product, int userId);
+
+        public List<Product> GetProductsPerSeller(int sellerId);
+
+        public List<Product> GetBestSellingProducts();
 
     }
 }

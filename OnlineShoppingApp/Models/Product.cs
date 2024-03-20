@@ -6,7 +6,7 @@ namespace OnlineShoppingApp.Models
     public class Product
     {
 
-        public Product() { ImageUrl = new List<string>(); }    
+        public Product() { ImageUrl = new List<IFormFile>(); }    
 
 
         public int Id { get; set; }
@@ -32,9 +32,9 @@ namespace OnlineShoppingApp.Models
         public virtual ICollection<Images> Images { get; set; } = new List<Images>();
 
         [NotMapped]
-        public List<string> ImageUrl { get; set; }
-
-		public List<Rate> Rates { get; set; }
+        // public List<string> ImageUrl { get; set; }
+        public List<IFormFile> ImageUrl { get; set; }
+        public List<Rate> Rates { get; set; }
 		public List<Comment> Comments { get; set; }
         public List<ProductSeller> ProductSellers { get; set; }
 
