@@ -1,4 +1,9 @@
  @model OnlineShoppingApp.Models.Product
+
+@{
+    List<Rate> allRates = Model.Rates;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -183,7 +188,7 @@
                                 </div>
                             </div>
                         </div>
-                      
+
 
 
 
@@ -201,13 +206,31 @@
                                                 @*  <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;"> *@
                                                 <div class="media-body">
                                                     <h6>@comm.AppUser.FirstName<small> - <i>@comm.Date</i></small></h6>
-                                                    <div class="text-primary mb-2">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star-half-alt"></i>
-                                                        <i class="far fa-star"></i>
-                                                    </div>
+
+                                                    @*   @if(i)
+                                            {
+
+                                            } *@
+                                                    @for (int i = 0; i < allRates?.Count; i++)
+                                                    {
+                                                        if (comm.AppUserId == allRates[i]?.BuyerId)
+                                                        {
+                                                            <div class="text-primary mb-2">
+                                                                @for (int j = 0; j < 5; j++)
+                                                                {
+                                                                    @if (allRates[i]?.NumOfStars >= j + 1)
+                                                                    {
+                                                                        <small class="fas fa-star"></small>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <small class="far fa-star"></small>
+                                                                    }
+                                                                }
+                                                            </div>
+
+                                                        }
+                                                    }
                                                     <p>
                                                         @comm.Text
                                                     </p>
@@ -232,6 +255,8 @@
                                         <div class="form-group">
                                             <label for="message">Your Review *</label>
                                             <textarea id="message" cols="30" rows="5" class="form-control" name="review"></textarea>
+@*                                             <span asp-validation-for="m" class="text-danger"></span>
+ *@
                                         </div>
 
                                         <div class="form-group mb-0">

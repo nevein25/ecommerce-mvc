@@ -69,5 +69,10 @@ namespace OnlineShoppingApp.Repositories.Classes
                 return 0;
             }
         }
+
+        public List<Rate> GetAllRatesForProduct(int productId)
+        {
+            return _context.Rates.Where(r => r.ProductId == productId).ToList();
+        }
     }
 }

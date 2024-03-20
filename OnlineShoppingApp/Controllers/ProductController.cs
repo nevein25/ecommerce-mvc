@@ -84,6 +84,7 @@ namespace OnlineShoppingApp.Controllers
             }
             var comments = commentsRepo.GetAllComments(id);
             product.Comments = comments;
+            product.Rates = _rateRepo.GetAllRatesForProduct(id);
             //var productViewModel = new ProductViewModel
             //{
             //    Products = new List<Product> { product },

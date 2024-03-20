@@ -10,5 +10,7 @@ namespace OnlineShoppingApp.ViewModels
 		public List<string> ImageUrls { get; set; } = new List<string>();
 		public List<Comment> Comments { get; set; }= new List<Comment>();
 		public List<Product> BestSellerProduct { get; set; }= new List<Product>();
+
+		//public List<Rate> userRatings { get; set; } = new();
 	}
 }
