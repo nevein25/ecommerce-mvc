@@ -40,8 +40,8 @@ namespace OnlineShoppingApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-           builder.Services.AddHttpContextAccessor();
-           builder.Services.AddScoped<CartService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<CartService>();
 
 
             // 3. adding google authentication to the container
@@ -78,6 +78,12 @@ namespace OnlineShoppingApp
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+               name: "CatchAll",
+               pattern: "{*url}",
+               defaults: new { controller = "Home", action = "NotFound" }
+           );
 
             app.Run();
         }

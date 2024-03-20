@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShoppingApp.Repositories.Interfaces;
 
 namespace OnlineShoppingApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminsController : Controller
     {
         private ISellerRepo _sellerRepo;

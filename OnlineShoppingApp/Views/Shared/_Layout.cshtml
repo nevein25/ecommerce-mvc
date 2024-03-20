@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using OnlineShoppingApp.Services
 @using OnlineShoppingApp.Services.Interfaces
+@using System.Security.Claims
 @* @model OnlineShoppingApp.ViewModels.ProductViewModel *@
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
@@ -9,6 +10,23 @@
     ICartService cartService = new CartService(httpContextAccessor);
     var count = cartService?.GetCartItems()?.Count;
     var Cartlst = cartService?.GetCartItems();
+
+    /// Role for signied in user
+    AppUser user = null;
+    IList<string> userRoles = null;
+    string role = ""; // Buyer, Seller, Admin
+    if (User != null)
+    {
+        user = await _userManager.GetUserAsync(User);
+
+        if (user != null)
+        {
+            userRoles = await _userManager.GetRolesAsync(user);
+            role = userRoles.FirstOrDefault();
+        }
+
+    }
+    ///
 }
 
 <!DOCTYPE html>
@@ -120,12 +138,26 @@
                             <ul class="list-main">
                                 <li><i class="ti-location-pin"></i> Store location</li>
                                 <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li>
+
                                 @if (!_signInManager.IsSignedIn(User))
                                 {
                                     <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                              
                                 }
                                 @if (_signInManager.IsSignedIn(User))
                                 {
+                                    if (User != null)
+                                    {
+                                        user = await _userManager.GetUserAsync(User);
+
+                                        if (user != null)
+                                        {
+                                            userRoles = await _userManager.GetRolesAsync(user);
+                                            role = userRoles.FirstOrDefault();
+                                        }
+
+                                    }
+
                                     <li><i class="ti-user"></i> <a> @User.Identity.Name</a></li>
                                     <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                                 }
@@ -170,12 +202,13 @@
                                         <select id="categorySelect" name="category">
 
                                             <option value="">All Categories</option>
-                                            @if (ViewBag.ProductCategories != null){
+                                            @if (ViewBag.ProductCategories != null)
+                                            {
 
                                                 @foreach (var category in ViewBag.ProductCategories)
-                                            {
-                                                <option value="@category.Id">@category.Name</option>
-                                            }
+                                                {
+                                                    <option value="@category.Id">@category.Name</option>
+                                                }
                                             }
                                         </select>
                                         <input id="searchInput" type="search" placeholder="Search Products Here....." name="search">
@@ -191,9 +224,21 @@
                             <div class="sinlge-bar">
                                 <a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
                             </div>
-                            <div class="sinlge-bar">
-                                <a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-                            </div>
+
+                            @if(@role == "Buyer")
+                            {
+                                <div class="sinlge-bar">
+                                    <a asp-controller="Buyers" asp-action="Profile" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+                                </div>
+                            }
+
+                            @if (@role == "Seller")
+                            {
+                                <div class="sinlge-bar">
+                                    <a asp-controller="Sellers" asp-action="Profile" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+                                </div>
+                            }
+
                             <div class="sinlge-bar shopping">
                                 <a class="single-icon" asp-controller="Cart" asp-action="Index"><i class="ti-bag"></i> <span class="total-count">@count</span></a>
                                 <!-- Shopping Item -->
@@ -349,6 +394,10 @@
                                                     </ul>
                                                 </li>
                                                 <li><a href="contact.html">Contact Us</a></li>
+                                                @if(role == "Admin")
+                                                {
+                                                    <li><a asp-controller="Admins" asp-action="GetNotVerifiedSellers">Verify Sellers</a></li>
+                                                }
                                             </ul>
                                         </div>
                                     </div>
