@@ -18,5 +18,6 @@ namespace OnlineShoppingApp.Models
         [NotMapped]
         public decimal Total { get { return SubTotal + DeliveryMethod.DeliveryCost; } }
         public string? PaymentIntentId { get; set; }
+        public string? ClientSecret { get; set; }
     }
 }

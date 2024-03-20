@@ -25,5 +25,26 @@ namespace OnlineShoppingApp.Repositories.Classes
         {
             return _shoppingContext.Orders.OrderBy(o => o.Id).LastOrDefault();
         }
+
+        public Order GetOrderById(int id)
+        {
+            return _shoppingContext.Orders.Find(id);
+        }
+
+        public Order GetWithPaymentIntent(string paymentIntentId)
+        {
+            return _shoppingContext.Orders.FirstOrDefault(o => o.PaymentIntentId == paymentIntentId);
+        }
+
+        public void UpdateOrder(int id, Order order)
+        {
+            var existingOrder = _shoppingContext.Orders.Find(id);
+            if (existingOrder != null)
+            {
+                existingOrder.ClientSecret = order.ClientSecret;
+                existingOrder.PaymentIntentId = order.PaymentIntentId;
+                _shoppingContext.SaveChanges();
+            }
+        }
     }
 }

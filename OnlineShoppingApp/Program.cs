@@ -29,6 +29,7 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<IBuyerRepo, BuyerRepo>();
             builder.Services.AddScoped<IOrderRepo, OrderRepo>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IOrderItemRepo, OrderItemRepo>();
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();

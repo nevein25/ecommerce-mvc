@@ -401,6 +401,9 @@ namespace OnlineShoppingApp.Migrations
                     b.Property<int>("BuyerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ClientSecret")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("DeliveryMethodId")
                         .HasColumnType("int");
 
