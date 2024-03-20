@@ -9,7 +9,9 @@ namespace OnlineShoppingApp.Models
 
         public string? BusinessName { get; set; }
         [MaxLength(9)]
-        public string VAT { get; set; }
+        public string? VAT { get; set; }
+        public string? Paper { get; set; }
+
 
         public bool IsVerified { get; set; } = false;
 

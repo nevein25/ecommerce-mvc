@@ -66,7 +66,7 @@ namespace OnlineShoppingApp.Repositories.Classes
             }
             else
             {
-                return 0; 
+                return 0;
             }
         }
     }

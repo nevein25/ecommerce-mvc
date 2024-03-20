@@ -36,6 +36,9 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<IOrderItemRepo, OrderItemRepo>();
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();
+            builder.Services.AddScoped<ISellerRepo, SellerRepo>();
+
+
             // 2.Adding identity to the container
             builder.Services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<ShoppingContext>()
@@ -83,6 +86,12 @@ namespace OnlineShoppingApp
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+               name: "CatchAll",
+               pattern: "{*url}",
+               defaults: new { controller = "Home", action = "NotFound" }
+           );
 
             app.Run();
         }
