@@ -11,8 +11,9 @@ namespace OnlineShoppingApp.Repositories.Interfaces
         public List<Product> GetByName(string Name);
         public List<Product> GetProductsStartingWith(string search);
 
-		//public void Edit(int id,Product newProduct);
-
+		public void Edit(int id,Product newProduct,int userId, List<IFormFile> ImageUrl);
+        public void insertImage(List<IFormFile> ImageUrl, int productID);
+        public void DeleteImage(Images image, string path);
         public void Insert(Product product,int userId, List<IFormFile> ImageUrl);
         public void Delete(Product product, int userId);
 

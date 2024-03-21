@@ -176,11 +176,12 @@ namespace OnlineShoppingApp.Controllers
 		}
 
         [HttpPost]
-        public IActionResult EditProduct(int id, Product product)
+        public IActionResult EditProduct(int id, Product product, List<IFormFile> ImageUrl)
         {
+
             if (product!=null)
             {
-              //  ProductRepo.Edit(id, product);
+                ProductRepo.Edit(id, product, User.GetUserId(), ImageUrl);
                 return RedirectToAction("Index", "Home");
             }
 
