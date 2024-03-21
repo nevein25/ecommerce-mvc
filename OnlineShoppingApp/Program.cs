@@ -7,6 +7,7 @@ using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services;
 using OnlineShoppingApp.Services.Classes;
 using OnlineShoppingApp.Services.Interfaces;
+using Stripe;
 
 namespace OnlineShoppingApp
 {
@@ -79,6 +80,12 @@ namespace OnlineShoppingApp
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+               
+
+
+
             // 5. add authentication
             app.UseAuthentication();
             app.UseAuthorization();

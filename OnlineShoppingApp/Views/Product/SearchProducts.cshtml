@@ -73,7 +73,7 @@
                                     <p class="d-inline-block">@item.Brand.Name</p>
                                 </div>
                                 <a href="#" class="btn btn-primary">
-                                    <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.Id"><i class="fa fa-shopping-cart mr-1"></i></a>
                                 </a>
                             </div>
                         </div>

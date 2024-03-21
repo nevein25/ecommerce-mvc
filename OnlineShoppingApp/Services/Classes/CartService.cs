@@ -131,5 +131,11 @@ namespace OnlineShoppingApp.Services
             var productTotal = (int)(existingItem.Quantity * existingItem.Price);
             return productTotal;
         }
+
+        public void DeleteCart()
+        {
+            var context = _httpContextAccessor.HttpContext;
+            context.Response.Cookies.Delete(CartKey);
+        }
     }
 }

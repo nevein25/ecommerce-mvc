@@ -13,5 +13,7 @@ namespace OnlineShoppingApp.Services.Interfaces
         public void UpdateCart(int id,int Quantity);
         public int GetTotal();
         public int GetTotalPerProduct(int productId);
+
+        public void DeleteCart();
     }
 }
