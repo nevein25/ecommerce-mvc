@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OnlineShoppingApp.Common;
 using OnlineShoppingApp.Models;
@@ -23,14 +24,12 @@ namespace OnlineShoppingApp.Controllers
         private readonly IDeliveryMethodsRepo _deliveryMethodsRepo;
         private readonly IAddressRepo _addressRepo;
         private readonly IOrderItemRepo _orderItemRepo;
-        private readonly IPaymentService _paymentService;
-       // const string endpointSecret = "whsec_f36dedfbb8ce6494b93a97361ae106438f871af81497e9ea6c6db2a08344712a";
-        public OrderController(IOrderRepo orderRepo, 
-            ICartService cartService, 
-            IProductRepo productRepo, 
-            IDeliveryMethodsRepo deliveryMethodsRepo, 
-            IAddressRepo addressRepo, 
-            IOrderItemRepo orderItemRepo, 
+        public OrderController(IOrderRepo orderRepo,
+            ICartService cartService,
+            IProductRepo productRepo,
+            IDeliveryMethodsRepo deliveryMethodsRepo,
+            IAddressRepo addressRepo,
+            IOrderItemRepo orderItemRepo,
             IPaymentService paymentService)
         {
             _orderRepo = orderRepo;
@@ -39,17 +38,12 @@ namespace OnlineShoppingApp.Controllers
             _deliveryMethodsRepo = deliveryMethodsRepo;
             _addressRepo = addressRepo;
             _orderItemRepo = orderItemRepo;
-            _paymentService = paymentService;
         }
 
         public IActionResult Create(string news, DataForOrder orderData)
         {
             Order order = new Order();
-            if (news == null)
-            {
-                Console.WriteLine("Alert News is Null");
-            }
-            else
+            if (news == "Strip")
             {
                 //BuyerCartViewModel buyerCartViewModel = new BuyerCartViewModel();
                 order.BuyerId = (int)orderData.BuyerId;
@@ -60,10 +54,6 @@ namespace OnlineShoppingApp.Controllers
                 _orderRepo.CreateOrder(order);
                 var orderId = _orderRepo.GetLastOrder().Id;
                 var CartItems = _cartService.GetCartItems();
-
-
-
-
                 var domain = "https://localhost:7289/";
                 var options = new SessionCreateOptions
                 {
@@ -71,20 +61,14 @@ namespace OnlineShoppingApp.Controllers
                     CancelUrl = domain + $"Order/Cancel",
                     LineItems = new List<SessionLineItemOptions>(),
                     Mode = "payment",
-                    
-
                 };
-
-
-
-
                 foreach (var cartItem in CartItems)
                 {
                     var sessionListItem = new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = (long)(cartItem.Price * cartItem.Quantity*100),
+                            UnitAmount = (long)(cartItem.Price * cartItem.Quantity * 100),
                             Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
@@ -109,9 +93,21 @@ namespace OnlineShoppingApp.Controllers
                     order.OrderItems.Add(gettedOrderItem);
 
                 }
-
+                var shippingCostLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(orderData.ShippingPrice * 100), // Convert shipping cost to cents
+                        Currency = "usd",ProductData = new SessionLineItemPriceDataProductDataOptions                 
+                        {                     
+                            Name = "Shipping Cost",                 
+                        }             
+                    },             
+                    Quantity = 1, // Assuming shipping cost is a one-time charge
+                 };         
+                options.LineItems.Add(shippingCostLineItem);
                 var service = new SessionService();
-                Session session=service.Create(options);
+                Session session = service.Create(options);
                 Response.Headers.Add("Location", session.Url);
 
                 //OrderConfirmationDataViewModel orderConfirmationData = new OrderConfirmationDataViewModel
@@ -129,6 +125,36 @@ namespace OnlineShoppingApp.Controllers
 
 
 
+            }
+            else if (news == "Cash")
+            {
+                order.BuyerId = (int)orderData.BuyerId;
+                order.DeliveryMethod = _deliveryMethodsRepo.GetbyId(orderData.DeliveryMethodId);
+                order.ShippingAddress = _addressRepo.GetAddressById((int)orderData.AddressId);
+                order.SubTotal = orderData.SubTotal;
+                _orderRepo.CreateOrder(order);
+                var orderId = _orderRepo.GetLastOrder().Id;
+                var CartItems = _cartService.GetCartItems();
+                foreach (var cartItem in CartItems)
+                {
+                    OrderItem orderItem = new OrderItem()
+                    {
+                        ProductId = cartItem.Id,
+                        Quantity = cartItem.Quantity,
+                        Price = cartItem.Price,
+                        Product = _productRepo.GetById(cartItem.Id),
+                        OrderId = orderId
+                    };
+                    _orderItemRepo.Insert(orderItem);
+                    var gettedOrderItem = _orderItemRepo.GetLast();
+                    order.OrderItems.Add(gettedOrderItem);
+                }
+                _cartService.DeleteCart();
+                return View("PaymentPending");
+            }
+            else
+            {
+                Console.WriteLine("Alert News is Null");
             }
             return new StatusCodeResult(303);
         }
@@ -154,10 +180,12 @@ namespace OnlineShoppingApp.Controllers
                 if (order != null)
                 {
                     order.Status = OrderStatus.PaymentReceived;
+                    order.PaymentIntentId = session.PaymentIntentId;
                     _orderRepo.UpdateOrder(orderId, order);
                     _cartService.DeleteCart();
 
-                    return Content("Payment Done");
+                    return View("PaymentSucceeded");
+
                 }
                 else
                 {
@@ -170,75 +198,9 @@ namespace OnlineShoppingApp.Controllers
                 var order = _orderRepo.GetOrderById(orderId);
                 order.Status = OrderStatus.PaymentFailed;
                 _orderRepo.UpdateOrder(orderId, order);
-               
-                return Content("Payment Fail");
+
+                return View("PaymentFailed");
             }
         }
-
-
-
-
-
-        //public ActionResult PaymentProcess(string nameOnCard, string cardNumber, string cardExpiry, int cardCvc)
-        //{
-        //    //var order = _orderRepo.GetOrderById(orderId);
-        //    if ((nameOnCard != null || nameOnCard != string.Empty)
-        //        && (cardNumber != null || cardNumber != string.Empty)
-        //        && (cardExpiry != null || cardExpiry != string.Empty)
-        //        && cardCvc != 0)
-        //    {
-
-        //        return RedirectToAction("Webhook");
-        //    }
-        //    return new EmptyResult();
-        //}
-        ////[HttpPost]
-        //public IActionResult Webhook()
-        //{
-        //    var json =  new StreamReader(HttpContext.Request.Body).ReadToEnd();
-        //        var stripeEvent = EventUtility.ConstructEvent(json,
-        //            Request.Headers["Stripe-Signature"], endpointSecret);
-        //        var paymentIntent = (PaymentIntent)stripeEvent.Data.Object;
-        //        Order order;
-        //        // Handle the event
-        //        if (stripeEvent.Type == Events.PaymentIntentPaymentFailed)
-        //        {
-        //            order =_paymentService.UpdatePaymentIntentToSucceededOrFailed(paymentIntent.Id, false);
-        //            return View("PaymentSucceeded");
-        //        }
-        //        else if (stripeEvent.Type == Events.PaymentIntentSucceeded)
-        //        {
-        //           order = _paymentService.UpdatePaymentIntentToSucceededOrFailed(paymentIntent.Id, true);
-        //        }
-        //        // ... handle other event types
-        //        else
-        //        {
-        //            Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-        //        }
-
-        //        return View("PaymentFailed");
-        //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
-// Update order status to PaymentReceived if payment is successful
-//if (order != null)
-//{
-//    _paymentService.UpdateOrderStatusToPaymentReceived(orderId);
-//}
-
-// Redirect or return appropriate response
