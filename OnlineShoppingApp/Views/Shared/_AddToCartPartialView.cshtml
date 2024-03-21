@@ -1,0 +1,32 @@
+﻿ @model OnlineShoppingApp.Models.Product
+
+<a  id="add">Add to cart</a>
+
+@Html.HiddenFor(model => model.Id)
+<input type="hidden" id="product" name="product" value="@Model.Id" />
+
+<script>
+    document.addEventListener("DOMContentLoaded", _ => {
+
+        document.getElementById('add').addEventListener('click', _ => {
+        let productId = document.getElementById("product").value;
+        console.log(productId);
+        console.log("mmmmmmmm");
+            console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkk");
+
+            fetch(`/Cart/AddToCart/${productId}`, {
+                method: 'GET'
+            })
+                .then(response => {
+                    console.log(response);
+                    return response.text();
+                })
+                .then(data => {
+                    console.log(data);
+               
+                })
+                .catch(error => console.log(error)); 
+        });
+    });
+
+</script>
