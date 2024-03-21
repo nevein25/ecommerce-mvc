@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OnlineShoppingApp.Common;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
 using OnlineShoppingApp.Services.Classes;
@@ -7,8 +8,10 @@ using OnlineShoppingApp.Services.Interfaces;
 using OnlineShoppingApp.ViewModels;
 using Stripe;
 using Stripe.Checkout;
+using Stripe.Climate;
 using System.Net.WebSockets;
 using static System.Net.WebRequestMethods;
+using Order = OnlineShoppingApp.Models.Order;
 
 namespace OnlineShoppingApp.Controllers
 {
@@ -68,6 +71,7 @@ namespace OnlineShoppingApp.Controllers
                     CancelUrl = domain + $"Order/Cancel",
                     LineItems = new List<SessionLineItemOptions>(),
                     Mode = "payment",
+                    
 
                 };
 
@@ -80,8 +84,8 @@ namespace OnlineShoppingApp.Controllers
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = (long)(cartItem.Price * cartItem.Quantity),
-                            Currency = "inr",
+                            UnitAmount = (long)(cartItem.Price * cartItem.Quantity*100),
+                            Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = cartItem.ProductName.ToString(),
@@ -138,18 +142,21 @@ namespace OnlineShoppingApp.Controllers
                 return BadRequest("Invalid request");
             }
 
-            var sessionId = TempData["SessionId"].ToString();
-            var orderId = Convert.ToInt32(TempData["OrderId"]);
+            var sessionId = TempData.Peek("SessionId").ToString();
+            var orderId = Convert.ToInt32(TempData.Peek("OrderId"));
 
             var service = new SessionService();
             Session session = service.Get(sessionId);
 
-            if (session.PaymentStatus == "Paid")
+            if (session.PaymentStatus == "paid")
             {
                 var order = _orderRepo.GetOrderById(orderId);
                 if (order != null)
                 {
+                    order.Status = OrderStatus.PaymentReceived;
                     _orderRepo.UpdateOrder(orderId, order);
+                    _cartService.DeleteCart();
+
                     return Content("Payment Done");
                 }
                 else
@@ -160,6 +167,10 @@ namespace OnlineShoppingApp.Controllers
             }
             else
             {
+                var order = _orderRepo.GetOrderById(orderId);
+                order.Status = OrderStatus.PaymentFailed;
+                _orderRepo.UpdateOrder(orderId, order);
+               
                 return Content("Payment Fail");
             }
         }

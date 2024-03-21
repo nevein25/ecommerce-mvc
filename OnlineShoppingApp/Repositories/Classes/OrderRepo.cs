@@ -43,6 +43,7 @@ namespace OnlineShoppingApp.Repositories.Classes
             {
                 existingOrder.ClientSecret = order.ClientSecret;
                 existingOrder.PaymentIntentId = order.PaymentIntentId;
+                existingOrder.Status = order.Status;
                 _shoppingContext.SaveChanges();
             }
         }
