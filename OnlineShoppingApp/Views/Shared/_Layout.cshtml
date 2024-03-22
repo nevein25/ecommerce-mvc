@@ -68,46 +68,7 @@
 
 </head>
 <body>
-    @* <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container-fluid">
-    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineShoppingApp</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-    </li>
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </li>
 
-    @if (!_signInManager.IsSignedIn(User))
-    {
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-    </li>
-    }
-    else
-    {
-    <li class="nav-item">
-    <a class="nav-link text-dark"> Hello, @User.Identity.Name </a>
-    </li>
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-    </li>
-    }
-    </ul>
-    </div>
-    </div>
-    </nav>
-    </header> *@
     <!-- Preloader -->
     <div class="preloader">
         <div class="preloader-inner">
@@ -121,56 +82,6 @@
     <!-- Header -->
     <header class="header shop">
         <!-- Topbar -->
-        <div class="topbar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-md-12 col-12">
-                        <!-- Top Left -->
-                        @*                         <div class="top-left">
-                        <ul class="list-main">
-                        <li><i class="ti-headphone-alt"></i> +060 (800) 801-582</li>
-                        <li><i class="ti-email"></i> support@shophub.com</li>
-                        </ul>
-                        </div> *@
-                        <!--/ End Top Left -->
-                    </div>
-                    <div class="col-lg-7 col-md-12 col-12">
-                        <!-- Top Right -->
-                        <div class="right-content">
-                            <ul class="list-main">
-                                @*                                 <li><i class="ti-location-pin"></i> Store location</li>
-                                <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li> *@
-
-                                @*                                 @if (!_signInManager.IsSignedIn(User))
-                                {
-                                <li><i class="ti-shift-right"></i><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-                                <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
-
-                                }
-                                @if (_signInManager.IsSignedIn(User))
-                                {
-                                if (User != null)
-                                {
-                                user = await _userManager.GetUserAsync(User);
-
-                                if (user != null)
-                                {
-                                userRoles = await _userManager.GetRolesAsync(user);
-                                role = userRoles.FirstOrDefault();
-                                }
-
-                                }
-
-                                <li><i class="ti-user"></i> <a> @User.Identity.Name</a></li>
-                                <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
-                                } *@
-                            </ul>
-                        </div>
-                        <!-- End Top Right -->
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- End Topbar -->
         <div class="middle-inner">
             <div class="container">
@@ -223,11 +134,7 @@
                     </div>
                     <div class="col-lg-2 col-md-3 col-12">
                         <div class="right-bar">
-                            <!-- Search Form -->
-                            @*                             <div class="sinlge-bar">
-                            <a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
-                            </div>
-                            *@
+
                             @if (@role == "Buyer")
                             {
                                 <div class="sinlge-bar">
@@ -242,57 +149,61 @@
                                 </div>
                             }
 
-                            <div class="sinlge-bar shopping">
-                                <a class="single-icon" asp-controller="Cart" asp-action="Index"><i class="ti-bag"></i> <span class="total-count">@count</span></a>
-                                <!-- Shopping Item -->
-                                <div class="shopping-item">
-                                    <div class="dropdown-cart-header">
-                                        <span>@count Items</span>
-                                        <a asp-area="" asp-controller="Cart" asp-action="Index">View Cart</a>
-                                    </div>
-                                    <ul class="shopping-list">
-                                        @foreach (var item in Cartlst)
-                                        {
-                                            <li>
-                                                <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-                                                <a asp-controller="Cart" asp-action="DeleteFromIndex" asp-route-id="@item.Id" class="remove"><i class="fa fa-remove"></i></a>
-                                                <a class="cart-img" asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id"><img src="@item.PictureUrl" alt="#"></a>
-                                                <h4><a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">@item.ProductName</a></h4>
-                                                <p class="quantity">@item.Quantity x - <span class="amount">$@item.Price</span></p>
-                                            </li>
-                                        }
+                            @if (@role == "Buyer")
+                            {
+                                <div class="sinlge-bar shopping">
+                                    <a class="single-icon" asp-controller="Cart" asp-action="Index"><i class="ti-bag"></i> <span class="total-count">@count</span></a>
+                                    <!-- Shopping Item -->
+                                    <div class="shopping-item">
+                                        <div class="dropdown-cart-header">
+                                            <span>@count Items</span>
+                                            <a asp-area="" asp-controller="Cart" asp-action="Index">View Cart</a>
+                                        </div>
+                                        <ul class="shopping-list">
+                                            @foreach (var item in Cartlst)
+                                            {
+                                                <li>
+                                                    <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
+                                                    <a asp-controller="Cart" asp-action="DeleteFromIndex" asp-route-id="@item.Id" class="remove"><i class="fa fa-remove"></i></a>
+                                                    <a class="cart-img" asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id"><img src="@item.PictureUrl" alt="#"></a>
+                                                    <h4><a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">@item.ProductName</a></h4>
+                                                    <p class="quantity">@item.Quantity x - <span class="amount">$@item.Price</span></p>
+                                                </li>
+                                            }
 
-                                        @* <li>
+                                            @* <li>
                                         <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
                                         <a class="cart-img" href="#"><img src="https://via.placeholder.com/70x70" alt="#"></a>
                                         <h4><a href="#">Woman Necklace</a></h4>
                                         <p class="quantity">1x - <span class="amount">$35.00</span></p>
                                         </li> *@
-                                    </ul>
-                                    <div class="bottom">
-                                        <div class="total">
-                                            <span>Total</span>
-                                            <span class="total-amount">$@cartService.GetTotal()</span>
-                                        </div>
-                                        @if (cartService?.GetCartItems()?.Count == 0)
-                                        {
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
-                                                <strong>Holy guacamole!</strong>
-                                                Your Cart is Empty
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </ul>
+                                        <div class="bottom">
+                                            <div class="total">
+                                                <span>Total</span>
+                                                <span class="total-amount">$@cartService.GetTotal()</span>
                                             </div>
-                                            <a class="btn animate" asp-controller="Home" asp-action="Index">Checkout</a>
+                                            @if (cartService?.GetCartItems()?.Count == 0)
+                                            {
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                                                    <strong>Holy guacamole!</strong>
+                                                    Your Cart is Empty
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                </div>
+                                                <a class="btn animate" asp-controller="Home" asp-action="Index">Checkout</a>
 
-                                        }
-                                        else
-                                        {
-                                            <a class="btn animate" asp-controller="Address" asp-action="Index">Checkout</a>
-                                        }
+                                            }
+                                            else
+                                            {
+                                                <a class="btn animate" asp-controller="Address" asp-action="Index">Checkout</a>
+                                            }
+                                        </div>
                                     </div>
+                                    <!--/ End Shopping Item -->
                                 </div>
-                                <!--/ End Shopping Item -->
-                            </div>
+
+                            }
                         </div>
                     </div>
                 </div>
@@ -310,35 +221,38 @@
                                     <div class="navbar-collapse">
                                         <div class="nav-inner">
                                             <ul class="nav main-menu menu navbar-nav">
-                                                <li class="active"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                                                <li><a href="#">Product</a></li>
-                                                <li><a href="#">Service</a></li>
-                                                <li>
-                                                    <a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
-                                                    <ul class="dropdown">
-                                                        <li><a asp-area="" asp-controller="Cart" asp-action="Index">Cart</a></li>
-                                                        <li><a href="checkout.html">Checkout</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="#">Pages</a></li>
-                                                <li>
-                                                    <a href="#">Blog<i class="ti-angle-down"></i></a>
-                                                    <ul class="dropdown">
-                                                        <li><a href="blog-single-sidebar.html">Blog Single Sidebar</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="contact.html">Contact Us</a></li>
+
+                                                @if (role != "Admin")
+                                                {
+                                                    <li class="active"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                                                }
+                                                @if (role == "Buyer")
+                                                {
+                                                    <li>
+                                                        <a>Shop<i class="ti-angle-down"></i></a>
+                                                        <ul class="dropdown">
+                                                            <li><a asp-area="" asp-controller="Cart" asp-action="Index">Cart</a></li>
+                                                            <li><a href="checkout.html">Checkout</a></li>
+                                                        </ul>
+                                                    </li>
+                                                }
+
+
                                                 @if (role == "Admin")
                                                 {
                                                     <li><a asp-controller="Admins" asp-action="GetNotVerifiedSellers">Verify Sellers</a></li>
                                                 }
+                                                @if (role == "Seller")
+                                                {
+                                                    <li> <a asp-controller="Product" asp-action="InsertNewProduct">Add Product</a></li>
 
+                                                }
 
                                                 @* right *@
                                                 @if (!_signInManager.IsSignedIn(User))
                                                 {
-                                                    <li><i class="ti-shift-right"></i><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-                                                    <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                                                    <li><a asp-area="" asp-controller="Account" asp-action="Register"><i class="ti-shift-right"></i> Register</a></li>
+                                                    <li><a asp-area="" asp-controller="Account" asp-action="Login"><i class="ti-power-off"></i> Login</a></li>
 
                                                 }
                                                 @if (_signInManager.IsSignedIn(User))
@@ -355,8 +269,21 @@
 
                                                     }
 
-                                                    <li><i class="ti-user"></i> <a> @User.Identity.Name</a></li>
-                                                    <li><i class="ti-power-off"></i><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                                    @if (role == "Buyer")
+                                                    {
+                                                        <li> <a asp-controller="Buyers" asp-action="Profile"> <i class="ti-user"></i> @User.Identity.Name</a></li>
+                                                    }
+
+                                                    @if (role == "Seller")
+                                                    {
+                                                        <li> <a asp-controller="Sellers" asp-action="Profile"> <i class="ti-user"></i> @User.Identity.Name</a></li>
+                                                    }
+                                                    @if (role == "Admin")
+                                                    {
+                                                        <li> <a> <i class="ti-user"></i> @User.Identity.Name</a></li>
+                                                    }
+
+                                                    <li><a asp-area="" asp-controller="Account" asp-action="Logout"><i class="ti-power-off"></i> Logout</a></li>
                                                 }
                                             </ul>
                                         </div>

@@ -80,7 +80,7 @@ namespace OnlineShoppingApp.Controllers
             var product = ProductRepo.GetById(id);
             if (product == null)
             {
-                return NotFound("No Product is found");
+                return View("NotFound");
             }
             var comments = commentsRepo.GetAllComments(id);
             product.Comments = comments;

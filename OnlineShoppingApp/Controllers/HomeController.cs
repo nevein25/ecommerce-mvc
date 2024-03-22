@@ -64,6 +64,11 @@ namespace OnlineShoppingApp.Controllers
                     ViewBag.ProductCategories = categoriesRepo.GetAll();
                     return View(viewModel);
                 }
+                else
+                {
+                    return RedirectToAction("GetNotVerifiedSellers", "Admins");
+
+                }
             }
             else
             {
@@ -83,7 +88,7 @@ namespace OnlineShoppingApp.Controllers
 
 
             return NoContent();
-             
+
         }
 
 

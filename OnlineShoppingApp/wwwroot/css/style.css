@@ -9702,6 +9702,18 @@ a.text-dark:hover, a.text-dark:focus {
   animation: action 1s infinite alternate;
 }
 
+.main-color-back {
+    background-color: #F7941D !important;
+}
+
+.main-color {
+    color: #F7941D !important;
+}
+
+.color-white {
+    color: white !important;
+}
+
 @keyframes action {
   0% {
     transform: translateY(0);

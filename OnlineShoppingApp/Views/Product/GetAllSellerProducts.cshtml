@@ -35,15 +35,6 @@
 
 
 <body class="js">
-
-
-
-
-
-
-
-
-  
    
         <div class="container-fluid pb-5 mt-2">
             <div class="row px-xl-5">
@@ -52,12 +43,12 @@
                 <h1>All Products</h1>
             </div>
 
-            <div class="col-6 text-right">
+@*             <div class="col-6 text-right">
 
                 <a asp-controller="Product" asp-action="InsertNewProduct" class="btn btn-primary">Add Product</a>
 
             </div>
-
+ *@
                 @foreach (var item in Model?.Products)
                 {
                     <div class="col-lg-5 mb-30">
@@ -129,12 +120,12 @@
                                      Edit
                                 </button> *@
 
-                            <a asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id" class="btn btn-primary px-3 mr-2">Edit</a>
+                            <a asp-controller="Product" asp-action="EditProduct" asp-route-id="@item.Id" class="btn btn-primary px-3 mr-2"><span class="color-white">Edit</span></a>
 
 
 @*                             <a class="btn btn-primary px-3 delete-product" asp-controller="Product" asp-action="DeleteProduct" asp-route-id="@item.Id">Delete</a>
  *@
-                            <a class="btn btn-primary px-3 delete-product" data-product-id="@item.Id">Delete</a>
+                            <a class="btn btn-primary px-3 delete-product " data-product-id="@item.Id" style="color:white"><span class="color-white">Delete</span></a>
 
                             </div>
                         </div>

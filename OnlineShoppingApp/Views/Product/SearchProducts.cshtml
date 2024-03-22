@@ -1,7 +1,25 @@
-﻿ @model OnlineShoppingApp.ViewModels.ProductViewModel
+﻿@using Microsoft.AspNetCore.Identity
+ @model OnlineShoppingApp.ViewModels.ProductViewModel
 
+ @inject UserManager<AppUser> _userManager;
+@{
+    AppUser user = null;
+    IList<string> userRoles = null;
+    string role = ""; // Buyer, Seller, Admin
+    if (User != null)
+    {
+        user = await _userManager.GetUserAsync(User);
+
+        if (user != null)
+        {
+            userRoles = await _userManager.GetRolesAsync(user);
+            role = userRoles.FirstOrDefault();
+        }
+
+    }
+}
 <!-- Header Section -->
-<h1>All Products</h1>
+@* <h1>All Products</h1> *@
 <head>
     <meta charset="utf-8">
     <title>MultiShop - Online Shop Website Template</title>
@@ -44,6 +62,12 @@
                 height: 100%;
                 object-fit: cover;
             }
+
+        .no-products {
+            position: relative;
+            left: 342px;
+            top: 28px;
+        }
     </style>
 
 </head>
@@ -72,14 +96,26 @@
                                     <h6 class="font-weight-semi-bold d-inline-block">Brand: </h6>
                                     <p class="d-inline-block">@item.Brand.Name</p>
                                 </div>
-                                <a href="#" class="btn btn-primary">
-                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.Id"><i class="fa fa-shopping-cart mr-1"></i></a>
-                                </a>
+                                @* <a  class="btn btn-primary"> *@
+                                @if (role == "Buyer")
+                                {
+
+                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.Id" class="btn btn-primary " style="background-color: #F7941D !important;"><span style="color:white"><i class="fa fa-shopping-cart mr-1"></i> Add to cart</span></a>
+                                }
+                                @*      </a> *@
                             </div>
                         </div>
                     </div>
                 </div>
+
             }
+
+            @if (Model.Products.Count == 0)
+            {
+                <div class="p-3 mb-2 bg-danger text-white no-products" id="error">There are no products with that name. Try something else.</div>
+
+            }
+
         </div>
     </div>
 </body>

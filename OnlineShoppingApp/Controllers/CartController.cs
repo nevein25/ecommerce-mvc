@@ -96,5 +96,11 @@ namespace OnlineShoppingApp.Controllers
 			};
             return RedirectToAction("Index", "Address", buyerCartData);
         }
+        [HttpGet]
+        public IActionResult GetNumOfItemsInCart()
+        {
+            return Json(_cartService?.GetCartItems()?.Count);
+        }
     }
+
 }

@@ -20,3 +20,15 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.main-color-back {
+    background-color: #F7941D !important;
+}
+
+.main-color {
+    color: #F7941D !important;
+}
+
+.color-white {
+    color: white !important;
+}
