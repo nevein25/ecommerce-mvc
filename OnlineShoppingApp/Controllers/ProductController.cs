@@ -116,8 +116,12 @@ namespace OnlineShoppingApp.Controllers
                 Categories = categoriesRepo.GetAll(),
              
 			};
-			// Pass the filtered products to the view
-			return View(viewModel);
+
+            ViewBag.ProductCategories = categoriesRepo.GetAll();
+            ViewBag.SelectedCategoryId = category;
+            ViewBag.SearchInput = search;
+            // Pass the filtered products to the view
+            return View(viewModel);
 		}
 
 

@@ -10,7 +10,7 @@
     ICartService cartService = new CartService(httpContextAccessor);
     var count = cartService?.GetCartItems()?.Count;
     var Cartlst = cartService?.GetCartItems();
-
+    var selectedCategoryId = ViewBag.SelectedCategoryId ?? 0; // Default value if not set
     /// Role for signied in user
     AppUser user = null;
     IList<string> userRoles = null;
@@ -107,31 +107,30 @@
                         <!--/ End Search Form -->
                         <div class="mobile-nav"></div>
                     </div>
+
                     <div class="col-lg-8 col-md-7 col-12">
                         <div class="search-bar-top">
                             <div class="search-bar">
                                 <form asp-controller="Product" asp-action="SearchProducts" method="get">
-
                                     <div class="search-bar">
                                         <select id="categorySelect" name="category">
-
-                                            <option value="">All Categories</option>
+                                            <option value="0" selected="@((int?)ViewBag.SelectedCategoryId == 0 ? "selected" : null)">All Categories</option>
                                             @if (ViewBag.ProductCategories != null)
                                             {
-
-                                                @foreach (var category in ViewBag.ProductCategories)
+                                                foreach (var category in ViewBag.ProductCategories)
                                                 {
-                                                    <option value="@category.Id">@category.Name</option>
+                                                    <option value="@category.Id" selected="@((int?)ViewBag.SelectedCategoryId == category.Id ? "selected" : null)">@category.Name</option>
                                                 }
                                             }
                                         </select>
-                                        <input id="searchInput" type="search" placeholder="Search Products Here....." name="search">
+                                        <input id="searchInput" type="search" placeholder="Search Products Here....." name="search" value="@ViewBag.SearchInput">
                                         <button type="submit" class="btnn"><i class="ti-search"></i></button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-2 col-md-3 col-12">
                         <div class="right-bar">
 
@@ -196,7 +195,7 @@
                                             }
                                             else
                                             {
-                                                <a class="btn animate" asp-controller="Address" asp-action="Index">Checkout</a>
+                                                <a class="btn animate" asp-controller="Cart" asp-action="Index">Checkout</a>
                                             }
                                         </div>
                                     </div>

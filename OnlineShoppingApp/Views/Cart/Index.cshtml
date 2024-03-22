@@ -14,6 +14,13 @@
     int DeliveryMethodId = DeliveryMethodRepo.GetbyName("Free").Id;
 
 }
+@section Links{
+    <style>
+        input.btn:hover{
+            background: #F7941D !important;
+        }
+    </style>
+}
 <h1>Cart Items</h1>
 
 <!-- Breadcrumbs -->
@@ -107,7 +114,7 @@
                                                 <input class="font-weight-bold " name="news" type="radio" value="@item.Id" data-delivery-cost="@item.DeliveryCost" checked />
                                                 <span class="p-2">@item.ShortName</span>
                                                 <span> @item.DeliveryCost.ToString("c")</span>
-                                                <span> (@item.Description)</span>
+                                                <span> (@item.DeliveryTime)</span>
 
                                             }
                                             else
@@ -115,7 +122,7 @@
                                                 <input class="font-weight-bold " name="news" type="radio" value="@item.Id" data-delivery-cost="@item.DeliveryCost" />
                                                 <span class="p-2">@item.ShortName</span>
                                                 <span> @item.DeliveryCost.ToString("c")</span>
-                                                <span> (@item.Description)</span>
+                                                <span> (@item.DeliveryTime)</span>
                                             }
                                             <br />
                                         }
@@ -146,15 +153,17 @@
                                                 Your Cart is Empty
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
-                                            <a class="btn animate" asp-controller="Home" asp-action="Index">Checkout</a>
+                                            <a class="btn" asp-controller="Home" asp-action="Index">Checkout</a>
 
                                         }
                                         else
                                         {
-                                            <button type="submit"><a class="btn animate">Checkout</a></button>
+                                            <input type="submit" class="btn" style="background:#333;" value="Checkout" />
+
+                                            @* <a>Checkout</a> *@
                                         }
 
-                                        <a href="#" class="btn">Continue shopping</a>
+                                        <a class="btn" asp-controller="Home" asp-action="Index">Continue shopping</a>
                                     </div>
                                 </div>
                             </div>

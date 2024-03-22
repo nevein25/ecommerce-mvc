@@ -1212,14 +1212,14 @@ Version:1.0
 	background: #fff;
 	overflow: hidden;
 }
-.hero-slider .single-slider {
-	height: auto;
-	background-image: url('https://via.placeholder.com/1900x700');
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
-    height: 510px;
-}
+	.hero-slider .single-slider {
+		height: auto;
+		background-image: url('images/Shopping-7.jpg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		height: 510px;
+	}
 .hero-slider .text-inner {
 	
 }

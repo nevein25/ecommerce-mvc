@@ -24,11 +24,13 @@ radioButtons.forEach(function (radio) {
 function toggleAddNewAddress(radio) {
     var newAddressFields = document.getElementById("NewAddressForm");
     var ExistingAddress = document.getElementById("ExistingAddressForm");
+    var ExistingSelect = document.getElementById("existing");
     if (radio.checked && radio.value === "ch2") {
         newAddressFields.style.display = "flex";
         ExistingAddress.style.display = "none";
     } else {
         ExistingAddress.style.display = "flex";
+        ExistingSelect.style.display = "block";
         newAddressFields.style.display = "none";
     }
 }

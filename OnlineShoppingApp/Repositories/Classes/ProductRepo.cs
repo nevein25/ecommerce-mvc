@@ -29,14 +29,10 @@ namespace OnlineShoppingApp.Repositories.Classes
             return Context.Products.Include(p => p.Category).Include(p => p.Brand).Include(p => p.Images).Include(p => p.Comments).Include(p => p.Rates).ToList();
 
         }
-
         public Product GetById(int id)
         {
             return Context.Products.Include(p => p.Category).Include(p => p.Brand).Include(p => p.Images).Include(p => p.Rates).Include(p => p.Comments).FirstOrDefault(p => p.Id == id);
         }
-
-
-
         public void insertImage(List<IFormFile> ImageUrl,int productID)
         {
             bool isFirstImage = true; // Flag to track the first image
@@ -66,11 +62,6 @@ namespace OnlineShoppingApp.Repositories.Classes
                 }
             }
         }
-
-
-
-
-
         public void Insert(Product product, int userId, List<IFormFile> ImageUrl)
         {
             if (product != null)
@@ -113,8 +104,6 @@ namespace OnlineShoppingApp.Repositories.Classes
                 File.Delete(imagePath);
             }
         }
-
-
         public void Edit(int id, Product newProduct, int userId, List<IFormFile> ImageUrl)
         {
             // Retrieve the existing product by its id including related images
@@ -124,7 +113,6 @@ namespace OnlineShoppingApp.Repositories.Classes
 
             if (oldProd != null)
             {
-
                 var imagesCopy = oldProd.Images.ToList();
 
                 foreach (var image in imagesCopy)
@@ -133,30 +121,19 @@ namespace OnlineShoppingApp.Repositories.Classes
                     DeleteImage(image, image.Source); // Implement this method to delete images
 
                 }
-
-
-
-
                 // Update the properties of the existing product with the new values
                 oldProd.Name = newProduct.Name;
                 oldProd.Description = newProduct.Description;
                 oldProd.Price = newProduct.Price;
                 oldProd.categoryId = newProduct.categoryId;
                 oldProd.brandId = newProduct.brandId;
-
-
                 if (newProduct.ImageUrl != null)
                 {
                     insertImage(ImageUrl,oldProd.Id);
                     Context.SaveChanges();
                 }
-
-
             }
         }
-
-
-      
         public void Delete(Product product, int userId)
         {
             //Product oldProd = GetById(id);
@@ -166,6 +143,12 @@ namespace OnlineShoppingApp.Repositories.Classes
                 SellerId = userId,
             };
             Context.ProductSellers.Remove(prodSeller);
+            var imagesCopy = product.Images.ToList();
+            foreach (var image in imagesCopy)
+            {
+                // Delete the image from the repository
+                DeleteImage(image, image.Source);
+            }
             Context.Products.Remove(product);
             Context.SaveChanges();
         }
@@ -178,15 +161,10 @@ namespace OnlineShoppingApp.Repositories.Classes
                   p.Description.Contains(Name)).ToList();
 
         }
-
-
-
-
         public List<Product> GetProductsStartingWith(string search)
         {
             return GetByName(search);
         }
-
         public List<Product> GetProductsPerSeller(int sellerId)
         {
             var prodIDS = Context.ProductSellers.Where(ps => ps.SellerId == sellerId).Select(ps => ps.ProductId).ToList();
@@ -195,9 +173,6 @@ namespace OnlineShoppingApp.Repositories.Classes
 
             return products;
         }
-
-
-
         public List<Product> GetBestSellingProducts()
         {
 

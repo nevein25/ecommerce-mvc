@@ -66,20 +66,34 @@ namespace OnlineShoppingApp.Controllers
 
         public ActionResult AddNewAddress(AddAddressViewModel viewModel, decimal ShippingPrice, decimal SubTotal, int DeliveryMethodId)
         {
+            bool flag = false;
             if (viewModel != null)
             {
-                // Create a new Address object and map properties from the view model
-                Address address = new Address
+                if (_addressRepo.CheckIfExist(viewModel))
                 {
-                    BuildingNumber = viewModel.BuildingNumber,
-                    Street = viewModel.Street,
-                    City = viewModel.City,
-                    Country = viewModel.Country,
-                    IsMain = viewModel.IsMain,
-                    BuyerId = viewModel.BuyerId
-                };
+                    // Create a new Address object and map properties from the view model
+                    Address address = new Address
+                    {
+                        BuildingNumber = viewModel.BuildingNumber,
+                        Street = viewModel.Street,
+                        City = viewModel.City,
+                        Country = viewModel.Country,
+                        IsMain = viewModel.IsMain,
+                        BuyerId = viewModel.BuyerId
+                    };
+                    _addressRepo.Insert(address);
+                    flag = true;
+                    ViewBag.Flag = flag;
 
-                _addressRepo.Insert(address);
+                }
+                else
+                {
+                    flag = false;
+                    ViewBag.Flag = flag;
+                    Console.WriteLine("Address Exists");
+                    return RedirectToAction("Index");
+                }
+                
             }
             Address lastAdrs = _addressRepo.GetAddresses().Last();
             _dataForOrder.OrderAddress = lastAdrs;

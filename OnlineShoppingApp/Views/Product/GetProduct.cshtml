@@ -1,3 +1,4 @@
+@using OnlineShoppingApp.Helpers
  @model OnlineShoppingApp.Models.Product
 
 @{
@@ -114,24 +115,33 @@
                         <p class="d-inline-block">@Model.Brand.Name</p>
                     </div>
 
-                    <div class="d-flex align-items-center mb-4 pt-2">
-                        <div class="input-group quantity mr-3" style="width: 130px;">
-                            <div class="input-group-btn">
-                                <button class="btn btn-primary btn-minus">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                            </div>
-                            <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
-                            <div class="input-group-btn">
-                                <button class="btn btn-primary btn-plus">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary px-3">
-                            <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id"><i class="fa fa-shopping-cart mr-1"></i></a> 
-                            @* <partial name="_AddToCartPartialView" model="Model" /> *@
+                    <div class="d-flex align-items-center mb-4 pt-2 w-100">
+                        @* <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                        <button class="btn btn-primary btn-minus">
+                        <i class="fa fa-minus"></i>
                         </button>
+                        </div>
+                        <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                        <div class="input-group-btn">
+                        <button class="btn btn-primary btn-plus">
+                        <i class="fa fa-plus"></i>
+                        </button>
+                        </div>
+                        </div> *@
+                        @* <button class="btn px-3 w-50"> *@
+                        @if (UserHelper.LoggedinUserId == 0)
+                        {
+                            <a class="btn px-3 w-50 text-center" asp-controller="Account" asp-action="Login"><i class="fa fa-shopping-cart ms-3" style="color:white;"></i></a>
+
+                        }
+                        else
+                        {
+                            <a class="btn px-3 w-50 text-center" asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id"><i class="fa fa-shopping-cart ms-3" style="color:white;"></i></a>
+
+                        }
+                        @* <partial name="_AddToCartPartialView" model="Model" /> *@
+                        @* </button> *@
                     </div>
 
                 </div>
@@ -144,8 +154,8 @@
                         @*  asp-controller="Comments" asp-action="GetAll"
                         asp-route-prodId="@Model.Products[0].Id" *@
                         <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-@*                         <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
- *@                        @*     <a class="nav-item nav-link text-dark" data-toggle="tab" href="/Comments/GetAll/@Model.Products[0].Id">Reviews</a>
+                        @*                         <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
+                        *@                        @*     <a class="nav-item nav-link text-dark" data-toggle="tab" href="/Comments/GetAll/@Model.Products[0].Id">Reviews</a>
                         *@
                         <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews(@Model?.Comments?.Count)</a>
 

@@ -3,6 +3,7 @@ using OnlineShoppingApp.Context;
 using OnlineShoppingApp.Helpers;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Interfaces;
+using OnlineShoppingApp.ViewModels;
 
 namespace OnlineShoppingApp.Repositories.Classes
 {
@@ -81,6 +82,19 @@ namespace OnlineShoppingApp.Repositories.Classes
         public List<Address> GetAddressByBuyerId(int id)
         {
             return _shoppingContext.Addresses.Where(Ad => Ad.BuyerId == id).ToList();
+        }
+
+        public bool CheckIfExist(AddAddressViewModel address)
+        {
+            var adrs = _shoppingContext.Addresses.Where(a => a.BuyerId ==  address.BuyerId && a.BuildingNumber == address.BuildingNumber && a.Street == address.Street && a.City == address.City && a.Country == address.Country);
+			if (adrs is null)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
         }
     }
 }

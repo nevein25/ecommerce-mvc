@@ -6,6 +6,16 @@
 @{
     AppUser usr = Model.User;
 }
+@section Links{
+    <style>
+        input[type="submit"]{
+            background:#333 !important;
+        }
+        input[type="submit"].btn:hover {
+            background: #F7941D !important;
+        }
+    </style>
+}
 <!-- Breadcrumbs -->
 <div class="breadcrumbs">
     <div class="container">
@@ -14,7 +24,9 @@
                 <div class="bread-inner">
                     <ul class="bread-list">
                         <li><a href="index1.html">Home<i class="ti-arrow-right"></i></a></li>
-                        <li class="active"><a href="blog-single.html">Checkout</a></li>
+                        <li><a href="blog-single.html">Checkout<i class="ti-arrow-right"></i></a></li>
+                        <li><a href="blog-single.html">Choose Shipping Address<i class="ti-arrow-right"></i></a></li>
+                        <li class="active"><a href="blog-single.html">Payment</a></li>
                     </ul>
                 </div>
             </div>
@@ -30,7 +42,7 @@
                 <div class="col-lg-8 col-12">
                     <div class="checkout-form">
                         <h2>Make Your Checkout Here</h2>
-                        <p>Please register in order to checkout more quickly</p>
+                        <p>Please Choose the Way to payment</p>
                         <!-- Form -->
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-12">

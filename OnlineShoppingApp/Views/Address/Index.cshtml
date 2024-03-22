@@ -8,16 +8,28 @@
 
     AppUser usr = Model.User;
     var chooseFlag = 0;
-
+    var flag = ViewBag.Flag;
 
     //BuyerCartViewModel buyerCartView = ViewBag.buyerCart;
 }
-<style>
-    #map {
-        width: 100%;
-        height: 400px;
-    }
-</style>
+@section Links {
+    <style>
+        input[type="submit"] {
+            background: #333 !important;
+            color: #FFF;
+        }
+
+            input[type="submit"].btn:hover {
+                background: #F7941D !important;
+            }
+
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+}
+
 <!-- Breadcrumbs -->
 <div class="breadcrumbs">
     <div class="container">
@@ -26,7 +38,8 @@
                 <div class="bread-inner">
                     <ul class="bread-list">
                         <li><a href="index1.html">Home<i class="ti-arrow-right"></i></a></li>
-                        <li class="active"><a href="blog-single.html">Checkout</a></li>
+                        <li><a href="blog-single.html">Checkout<i class="ti-arrow-right"></i></a></li>
+                        <li class="active"><a href="blog-single.html">Choose Shipping Address</a></li>
                     </ul>
                 </div>
             </div>
@@ -41,9 +54,7 @@
             <div class="col-lg-7 col-12">
                 <div class="checkout-form">
                     <h2>Make Your Checkout Here</h2>
-                    <p>Please register in order to checkout more quickly</p>
-
-                    <h1>@Model.DeliveryMethodId</h1>
+                    <p>Please Choose a Shipping Address</p>
 
                     <!-- Form -->
                     <form class="form">
@@ -69,15 +80,23 @@
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="form-group">
                                     <label>Phone Number</label>
-                                    <input type="number" name="number" placeholder="" value="@Model.User.PhoneNumber" readonly>
+                                    <input type="tel" name="number" placeholder="You have no number added" value="@Model.User.PhoneNumber" readonly>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-6">
+                            @if (ViewBag.Flag == "false")
+                            {
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <div class="form-group">
+                                        <span style="color:red;">Alert this Address is Exists</span>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-lg-6 col-md-6 col-6 mt-3">
                                 <div>
                                     <input type="radio" name="chooseAddress" id="chooseAdrs" value="ch1" onchange="toggleAddNewAddress(this)" />Choose Existing Address
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-6">
+                            <div class="col-lg-6 col-md-6 col-6 mt-3">
                                 <div>
                                     <input type="radio" name="chooseAddress" value="ch2" onchange="toggleAddNewAddress(this)" />Add New Address
                                 </div>
@@ -86,9 +105,10 @@
                             { *@
                         </div>
                     </form>
-                    <form class="form" id="NewAddressForm" method="post" action="@Url.Action("AddNewAddress", "Address")" style="display: none;">
+
+                    <form class="form mt-4" id="NewAddressForm" method="post" action="@Url.Action("AddNewAddress", "Address")" style="display: none;">
                         <input name="BuyerId" value="@usr.Id" hidden />
-                        <div class="row" id="newAddressFields" >
+                        <div class="row" id="newAddressFields">
                             <div class="col-lg-6 col-md-6 col-12">
                                 <div class="form-group">
                                     <label>Building Number<span>*</span></label>
@@ -357,20 +377,20 @@
                                 <div class="form-group">
                                     <label>City<span>*</span></label>
                                     <input type="text" name="City" id="state-province">
-@*                                     <select name="City" id="state-province">
-                                        <option selected="selected">New Yourk</option>
-                                        <option>Los Angeles</option>
-                                        <option>Chicago</option>
-                                        <option>Houston</option>
-                                        <option>San Diego</option>
-                                        <option>Dallas</option>
-                                        <option>Charlotte</option>
-                                        <option>Cairo</option>
-                                        <option>Giza</option>
-                                        <option>Tanta</option>
-                                        <option>Alex</option>
-                                        <option>Benha</option>
-                                        <option>Mansora</option>
+                                    @*                                     <select name="City" id="state-province">
+                                    <option selected="selected">New Yourk</option>
+                                    <option>Los Angeles</option>
+                                    <option>Chicago</option>
+                                    <option>Houston</option>
+                                    <option>San Diego</option>
+                                    <option>Dallas</option>
+                                    <option>Charlotte</option>
+                                    <option>Cairo</option>
+                                    <option>Giza</option>
+                                    <option>Tanta</option>
+                                    <option>Alex</option>
+                                    <option>Benha</option>
+                                    <option>Mansora</option>
                                     </select> *@
                                 </div>
                             </div>
@@ -395,19 +415,21 @@
 
 
                             <div class="col-12 mt-3">
+
                                 <input type="submit" class="btn" value="Proceed to checkout" />
                             </div>
                         </div>
                     </form>
-                    <form class="form" id="ExistingAddressForm" method="post" action="@Url.Action("GetExistingAddressId", "Address")" style="display: none;">
+
+                    <form class="form mt-4" id="ExistingAddressForm" method="post" action="@Url.Action("GetExistingAddressId", "Address")" style="display: none;">
                         <input name="BuyerId" value="@Model.BuyerId" hidden />
-                        <div class="row" id="existingAdresses" >
+                        <div class="row" id="existingAdresses">
                             <div class="col-lg-12 col-md-12 col-12">
-                                <select asp-for="@Model.AddressId" class="form-control" asp-items="@Model.AddressList"></select>
+                                <select id="existing" asp-for="@Model.AddressId" class="form-control" asp-items="@Model.AddressList"></select>
                             </div>
 
 
-                           @*  <input type="text" hidden asp-for="@Model.User.Id" /> *@
+                            @*  <input type="text" hidden asp-for="@Model.User.Id" /> *@
                             <input type="text" hidden asp-for="@Model.ShippingPrice" />
                             <input type="text" hidden asp-for="@Model.SubTotal" />
                             <input type="text" hidden asp-for="@Model.DeliveryMethodId" />
@@ -422,13 +444,13 @@
                     <!--/ End Form -->
                 </div>
             </div>
-           <div class="col-lg-5 col-12">
+            <div class="col-lg-5 col-12">
                 <div class="order-details">
                     <!-- Order Widget -->
                     <div id="map"></div>
                     <!--/ End Button Widget -->
                 </div>
-            </div> 
+            </div>
         </div>
     </div>
 </section>
@@ -501,7 +523,7 @@
 <!-- End Shop Newsletter -->
 @section Scripts {
 
-    <script src="/js/address.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa5kEbNvkWp9i8QFI5x-C92qMBTyQobTM&callback=initMap" async defer></script>
     <script src="~/js/gps.js"></script>
+    <script src="~/js/address.js"></script>
 }
