@@ -91,7 +91,7 @@ namespace OnlineShoppingApp.Controllers
             //    Comments = comments
             //    // Populate other data in the view model as needed
             //};
-
+            ViewBag.Seller = ProductRepo.GetProductSellerId(id);
             ProductIdForJs = id;
             ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
             return View(product);

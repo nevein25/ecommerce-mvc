@@ -163,59 +163,54 @@
                         <input type="hidden" name="prodId" value="@Model.Products[0].Id" />
                         <button type="submit" class="nav-item nav-link text-dark" data-toggle="tab">Reviews</button>
                         </form> *@
-
-
-
-
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane fade show active pl-4 pb-4" id="tab-pane-1">
                             <h4 class="mb-3">Product Description</h4>
                             <p>@Model.Description</p>
-
                         </div>
-                        @*  <div class="tab-pane fade" id="tab-pane-2">
-                        <h4 class="mb-3">Additional Information</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                        <div class="row">
-                        <div class="col-md-6">
-                        <ul class="list-group list-group-flush">
-                        <li class="list-group-item px-0">
-                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                        </li>
-                        </ul>
+                        <div class="tab-pane fade" id="tab-pane-2">
+                            <h4 class="mb-3">Additional Information</h4>
+                            <p>@ViewBag.Seller.Description</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-0">
+                                            <img src="~/UserImage/@ViewBag.Seller.Image" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                            <div class="product-content">
+                                                <a asp-controller="Sellers" asp-action="GetProfileData" asp-route-id="@ViewBag.Seller.Id">@ViewBag.Seller.BusinessName</a>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item px-0">
+                                            @ViewBag.Seller.FirstName &nbsp; @ViewBag.Seller.LastName
+                                        </li>
+
+                                        @* <li class="list-group-item px-0">
+                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
+                                        </li>
+                                        <li class="list-group-item px-0">
+                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
+                                        </li> *@
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        @*  <li class="list-group-item px-0">
+
+                                        </li> *@
+                                        @* <li class="list-group-item px-0">
+                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
+                                        </li>
+                                        <li class="list-group-item px-0">
+                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
+                                        </li>
+                                        <li class="list-group-item px-0">
+                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
+                                        </li> *@
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                        <ul class="list-group list-group-flush">
-                        <li class="list-group-item px-0">
-                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                        </li>
-                        <li class="list-group-item px-0">
-                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                        </li>
-                        </ul>
-                        </div>
-                        </div>
-                        </div> *@
-
-
-
-
                         <div class="tab-pane fade" id="tab-pane-3">
                             <div class="row">
                                 <div class="col-md-6 pl-4">
@@ -265,8 +260,6 @@
 
                                         }
                                     }
-
-
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="mb-4">Leave a review</h4>
@@ -290,18 +283,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
                     </div>
                 </div>
             </div>

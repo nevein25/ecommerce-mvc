@@ -20,6 +20,6 @@ namespace OnlineShoppingApp.Repositories.Interfaces
         public List<Product> GetProductsPerSeller(int sellerId);
 
         public List<Product> GetBestSellingProducts();
-
+        public AppUser GetProductSellerId(int prodID);
     }
 }

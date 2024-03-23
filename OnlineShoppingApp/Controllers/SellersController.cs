@@ -9,17 +9,20 @@ namespace OnlineShoppingApp.Controllers
     {
         private ISellerRepo _sellerRepo;
         private IRateRepo _rateRepo;
+        private readonly ICategoriesRepo _categoriesRepo;
 
-        public SellersController(ISellerRepo sellerRepo, IRateRepo rateRepo)
+        public SellersController(ISellerRepo sellerRepo, IRateRepo rateRepo,ICategoriesRepo categoriesRepo)
         {
             _sellerRepo = sellerRepo;
             _rateRepo = rateRepo;
+            _categoriesRepo = categoriesRepo;
         }
 
 
         [HttpGet]
         public IActionResult GetProfileData(int Id)
         {
+            ViewBag.ProductCategories = _categoriesRepo.GetAll();
             return View(_sellerRepo.GetProfileDataAsViewer(Id));
         }
 

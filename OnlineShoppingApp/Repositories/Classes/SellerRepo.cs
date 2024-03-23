@@ -130,8 +130,15 @@ namespace OnlineShoppingApp.Repositories.Classes
                             (ps, r) => r.NumOfStars
                         );
 
-            double avgRating = rates.Average();
-            return (int)Math.Round(avgRating);
+            if (rates.Any())
+            {
+                double averageRating = rates.Average();
+                return (int)Math.Round(averageRating);
+            }
+            else
+            {
+                return 0;
+            }
 
         }
 

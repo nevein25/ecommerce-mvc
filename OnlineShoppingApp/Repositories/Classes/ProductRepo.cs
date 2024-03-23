@@ -108,30 +108,40 @@ namespace OnlineShoppingApp.Repositories.Classes
         {
             // Retrieve the existing product by its id including related images
             Product oldProd = GetById(id);
-            string uploadsFolder, fileNameWithExtention, filePath;
-            // If the product exists
 
+            // If the product exists
             if (oldProd != null)
             {
-                var imagesCopy = oldProd.Images.ToList();
+                // Update only the properties of the existing product with non-null and changed values
+                if (!string.IsNullOrEmpty(newProduct.Name))
+                    oldProd.Name = newProduct.Name;
 
-                foreach (var image in imagesCopy)
-                {
-                    oldProd.Images.Remove(image);
-                    DeleteImage(image, image.Source); // Implement this method to delete images
+                if (!string.IsNullOrEmpty(newProduct.Description))
+                    oldProd.Description = newProduct.Description;
 
-                }
-                // Update the properties of the existing product with the new values
-                oldProd.Name = newProduct.Name;
-                oldProd.Description = newProduct.Description;
-                oldProd.Price = newProduct.Price;
-                oldProd.categoryId = newProduct.categoryId;
-                oldProd.brandId = newProduct.brandId;
-                if (newProduct.ImageUrl != null)
+                if (newProduct.Price != 0) // Or any default value you set for Price
+                    oldProd.Price = newProduct.Price;
+
+                if (newProduct.categoryId != 0) // Or any default value you set for categoryId
+                    oldProd.categoryId = newProduct.categoryId;
+
+                if (newProduct.brandId != 0) // Or any default value you set for brandId
+                    oldProd.brandId = newProduct.brandId;
+
+                if (ImageUrl != null && ImageUrl.Any())
                 {
-                    insertImage(ImageUrl,oldProd.Id);
-                    Context.SaveChanges();
+                    var imagesCopy = oldProd.Images.ToList();
+
+                    foreach (var image in imagesCopy)
+                    {
+                        oldProd.Images.Remove(image);
+                        DeleteImage(image, image.Source); // Implement this method to delete images
+                    }
+
+                    insertImage(ImageUrl, oldProd.Id);
                 }
+
+                Context.SaveChanges();
             }
         }
         public void Delete(Product product, int userId)
@@ -187,6 +197,13 @@ namespace OnlineShoppingApp.Repositories.Classes
 
             return bestSellerProducts;
 
+        }
+
+        public AppUser GetProductSellerId(int prodID)
+        {
+            var sellerId = Context.ProductSellers.FirstOrDefault(ps => ps.ProductId == prodID).SellerId;
+
+            return Context.Users.FirstOrDefault(s => s.Id == sellerId);
         }
     }
 }

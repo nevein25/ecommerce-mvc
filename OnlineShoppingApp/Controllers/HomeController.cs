@@ -47,7 +47,7 @@ namespace OnlineShoppingApp.Controllers
                     {
                         Products = ProductRepo.GetProductsPerSeller(User.GetUserId())
                     };
-
+                    ViewBag.ProductCategories = categoriesRepo.GetAll();
                     return View("~/Views/Product/GetAllSellerProducts.cshtml", viewModel);
                 }
                 else if (role == UserType.Buyer.ToString())
