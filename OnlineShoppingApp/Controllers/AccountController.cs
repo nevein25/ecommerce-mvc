@@ -269,7 +269,7 @@ namespace OnlineShoppingApp.Controllers
 
                         IList<string> roles = await _userManager.GetRolesAsync(userExist);
 
-                        if (roles.FirstOrDefault() != UserType.Admin.ToString())
+                        if (roles.FirstOrDefault() != "Admin")
                             return RedirectToAction("Index", "Home");
                       
                         else

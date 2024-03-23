@@ -109,7 +109,7 @@
                                         <br />
                                         @foreach (var item in deliveryList)
                                         {
-                                            if (item.ShortName=="Free")
+                                            if (item.ShortName=="FREE")
                                             {
                                                 <input class="font-weight-bold " name="news" type="radio" value="@item.Id" data-delivery-cost="@item.DeliveryCost" checked />
                                                 <span class="p-2">@item.ShortName</span>
@@ -177,5 +177,5 @@
 </div>
 @section Scripts {
 
-    <script src="/js/cart.js"></script>
+    <script src="~/js/cart.js"></script>
 }

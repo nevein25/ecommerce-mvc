@@ -3,7 +3,6 @@
     public enum UserType
     {
         Buyer,
-        Seller,
-        Admin
+        Seller
     }
 }

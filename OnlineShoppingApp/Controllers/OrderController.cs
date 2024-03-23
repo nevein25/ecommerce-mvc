@@ -68,7 +68,7 @@ namespace OnlineShoppingApp.Controllers
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = (long)(cartItem.Price * cartItem.Quantity * 100),
+                            UnitAmount = (long)(cartItem.Price * 100) ,
                             Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {

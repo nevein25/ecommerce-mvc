@@ -94,6 +94,8 @@ namespace OnlineShoppingApp.Controllers
             ViewBag.Seller = ProductRepo.GetProductSellerId(id);
             ProductIdForJs = id;
             ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
+            ViewBag.ProductCategories = categoriesRepo.GetAll();
+
             return View(product);
 
         }
@@ -241,6 +243,7 @@ namespace OnlineShoppingApp.Controllers
             {
                 product.Comments = commentsRepo.GetAllComments(prodID);
             }
+            ViewBag.Seller = ProductRepo.GetProductSellerId(prodID);
             return View("~/Views/Product/GetProduct.cshtml", product);
 
         }

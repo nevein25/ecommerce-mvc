@@ -86,8 +86,10 @@ namespace OnlineShoppingApp.Repositories.Classes
 
         public bool CheckIfExist(AddAddressViewModel address)
         {
-            var adrs = _shoppingContext.Addresses.Where(a => a.BuyerId ==  address.BuyerId && a.BuildingNumber == address.BuildingNumber && a.Street == address.Street && a.City == address.City && a.Country == address.Country);
-			if (adrs is null)
+            var adrs = _shoppingContext.Addresses.Where(a => a.BuyerId ==  address.BuyerId && a.BuildingNumber == address.BuildingNumber && a.Street == address.Street && a.City == address.City && a.Country == address.Country).FirstOrDefault();
+			//var check = adrs.Any();
+
+            if (adrs is null)
 			{
 				return true;
 			}
