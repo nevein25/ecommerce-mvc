@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Context;
+using OnlineShoppingApp.DataSeed.ShoppingSeed;
 using OnlineShoppingApp.Models;
 using OnlineShoppingApp.Repositories.Classes;
 using OnlineShoppingApp.Repositories.Interfaces;
@@ -8,12 +9,13 @@ using OnlineShoppingApp.Services;
 using OnlineShoppingApp.Services.Classes;
 using OnlineShoppingApp.Services.Interfaces;
 using Stripe;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace OnlineShoppingApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -99,7 +101,20 @@ namespace OnlineShoppingApp
                pattern: "{*url}",
                defaults: new { controller = "Home", action = "NotFound" }
            );
-
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var _loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            var _dbContext = services.GetRequiredService<ShoppingContext>();
+            try
+            {
+                 await _dbContext.Database.MigrateAsync(); // Update-Database
+                 await ShoppingContextSeed.SeedAsync(_dbContext); // Data Seeding
+            }
+            catch (Exception ex)
+            {
+                var logger = _loggerFactory.CreateLogger<Program>();
+                logger.LogError(ex, "An Error has Occured during apply the migration");
+            }
             app.Run();
         }
     }
