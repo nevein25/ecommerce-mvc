@@ -21,5 +21,6 @@ namespace OnlineShoppingApp.Repositories.Interfaces
 
         public List<Product> GetBestSellingProducts();
         public AppUser GetProductSellerId(int prodID);
+        public void UpdateProductQuantity(int prodID, Product product);
     }
 }

@@ -14,7 +14,6 @@ namespace OnlineShoppingApp.Models
         [MaxLength(30)]
         [Required]
         public string Name { get; set; }
-
         public string? Description { get; set; }
         public decimal Price { get; set; }
 
@@ -24,11 +23,12 @@ namespace OnlineShoppingApp.Models
 
         public virtual Category Category { get; set; }
 
-
         // Foreign key property
         [ForeignKey(nameof(Brand))]
         public int brandId { get; set; }
         public virtual Brand Brand { get; set; }
+
+        public int Quantity { get; set; }
         public virtual ICollection<Images>? Images { get; set; } = new List<Images>();
 
         [NotMapped]

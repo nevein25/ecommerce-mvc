@@ -149,6 +149,13 @@ namespace OnlineShoppingApp.Controllers
                     var gettedOrderItem = _orderItemRepo.GetLast();
                     order.OrderItems.Add(gettedOrderItem);
                 }
+                var orderitems = _orderItemRepo.GetAll(orderId);
+                foreach (var item in orderitems)
+                {
+                    var prod = _productRepo.GetById(item.ProductId);
+                    prod.Quantity -= item.Quantity;
+                    _productRepo.UpdateProductQuantity(item.ProductId, prod);
+                }
                 _cartService.DeleteCart();
                 return View("PaymentPending");
             }
@@ -183,7 +190,13 @@ namespace OnlineShoppingApp.Controllers
                     order.PaymentIntentId = session.PaymentIntentId;
                     _orderRepo.UpdateOrder(orderId, order);
                     _cartService.DeleteCart();
-
+                    var orderitems = _orderItemRepo.GetAll(orderId);
+                    foreach(var item in orderitems)
+                    {
+                        var prod = _productRepo.GetById(item.ProductId);
+                        prod.Quantity -= item.Quantity;
+                        _productRepo.UpdateProductQuantity(item.ProductId, prod);
+                    }
                     return View("PaymentSucceeded");
 
                 }

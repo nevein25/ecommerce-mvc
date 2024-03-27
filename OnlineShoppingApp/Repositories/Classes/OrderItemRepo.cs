@@ -13,6 +13,11 @@ namespace OnlineShoppingApp.Repositories.Classes
             _shoppingContext = shoppingContext;
         }
 
+        public List<OrderItem> GetAll(int orderId)
+        {
+            return _shoppingContext.OrderItems.Where(o => o.OrderId == orderId).ToList();
+        }
+
         public OrderItem GetLast()
         {
             return _shoppingContext.OrderItems.OrderBy(o => o.Id).LastOrDefault();

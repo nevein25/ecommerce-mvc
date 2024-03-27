@@ -41,7 +41,14 @@
                                         <span asp-validation-for="Price" class="text-danger"></span>
                                     </div>
                                 </div>
-
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Quantity" class="control-label">Quantity</label>
+                                        <input asp-for="Quantity" class="form-control" id="Quantity" style="margin-top: 9px;" type="number" min="1" />
+                                        <br />
+                                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                                    </div>
+                                </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="form-group">
                                         <label asp-for="ImageUrl" class="control-label">Upload Image</label>

@@ -205,5 +205,15 @@ namespace OnlineShoppingApp.Repositories.Classes
 
             return Context.Users.FirstOrDefault(s => s.Id == sellerId);
         }
+
+        public void UpdateProductQuantity(int prodID, Product product)
+        {
+            var prod = Context.Products.Find(prodID);
+            if(prod != null)
+            {
+                prod.Quantity = product.Quantity;
+                Context.SaveChanges();
+            }
+        }
     }
 }
