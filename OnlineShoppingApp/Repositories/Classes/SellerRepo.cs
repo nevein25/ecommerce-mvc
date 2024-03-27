@@ -157,6 +157,17 @@ namespace OnlineShoppingApp.Repositories.Classes
 
             }
         }
+        public bool CheckIfSeller(int id)
+        {
+            var Seller = _context.Sellers.FirstOrDefault(s => s.Id == id);
+            if (Seller == null)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
 
     }
 }

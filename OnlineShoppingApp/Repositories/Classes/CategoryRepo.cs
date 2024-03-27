@@ -15,5 +15,11 @@ namespace OnlineShoppingApp.Repositories.Classes
         {
            return Context.Categories.ToList();
         }
+        public void Insert(Category category)
+        {
+            Context.Categories.Add(category);
+            Context.SaveChanges();
+        }
+
     }
 }

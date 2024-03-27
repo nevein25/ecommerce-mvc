@@ -10,5 +10,7 @@ namespace OnlineShoppingApp.Repositories.Interfaces
         public bool UpdateProfile(UpdateSellerProfileViewModel oldData, int sellerId);
         public List<Seller> GetNotVerifiedSeller();
         public bool VerifySeller(int sellerId);
+
+        public bool CheckIfSeller(int id);
     }
 }

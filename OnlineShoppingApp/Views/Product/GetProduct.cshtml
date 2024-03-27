@@ -1,3 +1,4 @@
+@using OnlineShoppingApp.Extentions
 @using OnlineShoppingApp.Helpers
  @model OnlineShoppingApp.Models.Product
 
@@ -44,6 +45,19 @@
         .color-white {
             color: white !important;
         }
+
+       
+        .replies-list {
+            margin-top: 20px; /* Adjust the top margin as needed */
+            padding-left: 30px; /* Adjust the left padding as needed */
+        }
+
+        /* Style for individual reply */
+        .reply-item {
+            border-left: 2px solid #ccc; /* Add a left border for separation */
+            padding-left: 10px; /* Adjust the left padding as needed */
+        }
+    
     </style>
 </head>
 
@@ -251,9 +265,47 @@
 
                                                         }
                                                     }
+
                                                     <p>
                                                         @comm.Text
                                                     </p>
+                                                 
+                                                        @if (ViewBag.IsSeller == true && ViewBag.Seller.Id == User.GetUserId())
+                                                        {
+                                                            <button class="replyButton" onclick="toggleSellerReply(this)">Reply</button>
+                                                            <div class="form-group sellerReply" style="display:none;">
+                                                                <label for="SellerReplyInput" class="control-label">Enter Your Reply</label>
+                                                                <div>
+
+                                                                    <form asp-controller="Reply" asp-action="InsertReply">
+                                                                        <input type="hidden" id="commentId" name="commentId" value="@comm.Id">
+                                                                        <input type="text" class="form-control" name="enteredText" />
+                                                                        <input type="submit" value="Send Reply" class="submitReplyButton"></input>
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    @if (comm.Replies != null && comm.Replies.Any())
+                                                    {
+                                                        <button class="showRepliesButton" onclick="toggleReplies(this)">Show Replies</button>
+                                                        <ul class="repliesList" style="list-style-type: none; padding-left: 0; display:none;">
+                                                            @foreach (var reply in comm.Replies)
+                                                            {
+                                                                <li class="reply-item">
+                                                                    <div class="media mb-4">
+                                                                        <div class="media-body">
+                                                                            <h6>@reply.AppUser.FirstName<small> - <i>@reply.Date</i></small></h6>
+                                                                            <p>@reply.Text</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                   
+
+
 
                                                 </div>
 
@@ -262,26 +314,33 @@
                                         }
                                     }
                                 </div>
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">Leave a review</h4>
-                                    @* <small>Your email address will not be published. Required fields are marked *</small> *@
-                                    <div class="d-flex my-3">
-                                        <partial name="_RatingPartialView" model="Model" />
-                                    </div>
-                                    <form asp-controller="Product" asp-action="InsertComment">
-                                        <input type="hidden" id="prodID" name="prodID" value="@Model.Id">
-                                        <div class="form-group">
-                                            <label for="message">Your Review *</label>
-                                            <textarea id="message" cols="30" rows="5" class="form-control" name="review"></textarea>
-                                            @*                                             <span asp-validation-for="m" class="text-danger"></span>
-                                            *@
-                                        </div>
 
-                                        <div class="form-group mb-0">
-                                            <input type="submit" value="Send Your Review" class="btn btn-primary px-3 main-color-back color-white">
+                                @if(ViewBag.IsSeller == false)
+                                {
+                                    <div class="col-md-6">
+                                        <h4 class="mb-4">Leave a review</h4>
+                                        @* <small>Your email address will not be published. Required fields are marked *</small> *@
+                                        <div class="d-flex my-3">
+                                            <partial name="_RatingPartialView" model="Model" />
                                         </div>
-                                    </form>
-                                </div>
+                                        <form asp-controller="Product" asp-action="InsertComment">
+                                            <input type="hidden" id="prodID" name="prodID" value="@Model.Id">
+                                            <div class="form-group">
+                                                <label for="message">Your Review *</label>
+                                                <textarea id="message" cols="30" rows="5" class="form-control" name="review"></textarea>
+                                                @*                                             <span asp-validation-for="m" class="text-danger"></span>
+                                            *@
+                                            </div>
+
+                                            <div class="form-group mb-0">
+                                                <input type="submit" value="Send Your Review" class="btn btn-primary px-3 main-color-back color-white">
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -311,6 +370,8 @@
     <script src="~/js/RateProducts.js">
 
     </script>
+    <script src="~/js/Reply.js"></script>
+    
 </body>
 
 </html>

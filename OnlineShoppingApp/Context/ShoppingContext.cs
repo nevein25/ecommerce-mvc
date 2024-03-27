@@ -40,6 +40,7 @@ namespace OnlineShoppingApp.Context
         public DbSet<Rate> Rates { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<Replies> Replies { get; set; } 
 
 
 

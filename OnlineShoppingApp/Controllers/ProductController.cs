@@ -23,7 +23,8 @@ namespace OnlineShoppingApp.Controllers
         static int ProductIdForJs = 0;
         ICommentsRepo commentsRepo;
         IUserRepo userRepo;
-        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, ICommentsRepo commentsRepo, IRateRepo rateRepo , UserManager<AppUser> userManager, IUserRepo _userRepo)
+        ISellerRepo sellerRepo;
+        public ProductController(IProductRepo _productRepo,ICategoriesRepo _categoriesRepo, IBrandRepo _brandRepo, ICommentsRepo commentsRepo, IRateRepo rateRepo , UserManager<AppUser> userManager, IUserRepo _userRepo, ISellerRepo _sellerRepo)
         {
             ProductRepo = _productRepo;
             categoriesRepo = _categoriesRepo;
@@ -32,6 +33,7 @@ namespace OnlineShoppingApp.Controllers
             _rateRepo = rateRepo;
             _userManager = userManager;
             userRepo= _userRepo;
+            sellerRepo = _sellerRepo;
         }
 
 
@@ -95,7 +97,7 @@ namespace OnlineShoppingApp.Controllers
             ProductIdForJs = id;
             ViewBag.AvgRating= _rateRepo.GetAvgRateForProduct(id);
             ViewBag.ProductCategories = categoriesRepo.GetAll();
-
+            ViewBag.IsSeller = sellerRepo.CheckIfSeller(User.GetUserId());
             return View(product);
 
         }
@@ -141,7 +143,7 @@ namespace OnlineShoppingApp.Controllers
 
 
         [HttpPost]
-        public IActionResult InsertNewProduct(Product product, string otherBrand, List<IFormFile> ImageUrl)
+        public IActionResult InsertNewProduct(Product product, string otherBrand, string otherCategory, List<IFormFile> ImageUrl)
         {
             if (product != null)
             {
@@ -152,9 +154,16 @@ namespace OnlineShoppingApp.Controllers
                     brandRepo.Insert(newBrand);
                     product.brandId = newBrand.Id;
                 }
+                if (product.categoryId == -1 && !string.IsNullOrEmpty(otherCategory))
+                {
+                    // Insert a new brand if the user selected "Other"
+                    Category newCategory = new Category { Name = otherCategory };
+                    categoriesRepo.Insert(newCategory);
+                    product.categoryId = newCategory.Id;
+                }
 
                 // Insert the product
-                ProductRepo.Insert(product,User.GetUserId(), ImageUrl);
+                ProductRepo.Insert(product, User.GetUserId(), ImageUrl);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -166,7 +175,9 @@ namespace OnlineShoppingApp.Controllers
             ViewBag.Brand = brands;
             return View(product);
         }
-		public IActionResult EditProduct(int id)
+
+
+        public IActionResult EditProduct(int id)
 		{
 
             SelectList categories = new SelectList(categoriesRepo.GetAll(), "Id", "Name");

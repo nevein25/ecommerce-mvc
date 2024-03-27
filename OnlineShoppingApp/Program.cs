@@ -40,6 +40,7 @@ namespace OnlineShoppingApp
             builder.Services.AddScoped<IDeliveryMethodsRepo, DeliveryMethodRepo>();
             builder.Services.AddScoped<IAddressRepo, AddressRepo>();
             builder.Services.AddScoped<ISellerRepo, SellerRepo>();
+            builder.Services.AddScoped<IReplyRepo, ReplyRepo>();
 
 
             // 2.Adding identity to the container

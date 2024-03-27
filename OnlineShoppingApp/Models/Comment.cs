@@ -15,5 +15,7 @@ namespace OnlineShoppingApp.Models
 		public int ProductId { get; set; }
 
 		public Product Product { get; set; }
+
+		public ICollection<Replies>? Replies { get; set;}
 	}
 }

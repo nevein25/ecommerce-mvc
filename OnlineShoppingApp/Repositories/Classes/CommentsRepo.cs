@@ -33,7 +33,7 @@ namespace OnlineShoppingApp.Repositories.Classes
         {
            // var comments = context.Comments.Include(c => c.Product).Include(c => c.AppUser).ToList();
           
-           return context.Comments.Include(c=>c.Product).Include(c=>c.AppUser).Where(c=>c.ProductId==ProdID).ToList();
+           return context.Comments.Include(c=>c.Product).Include(c=>c.AppUser).Include(c=>c.Replies).Where(c=>c.ProductId==ProdID).ToList();
         }
 
        
@@ -45,12 +45,12 @@ namespace OnlineShoppingApp.Repositories.Classes
 
         public Comment GetComment(int id)
         {
-            return context.Comments.FirstOrDefault(c => c.Id == id);
+            return context.Comments.Include(c => c.Product).Include(c => c.AppUser).Include(c=>c.Replies).FirstOrDefault(c => c.Id == id);
         }
 
         public List<Comment> GetCommentsPerUser(int UID, int ProdID)
         {
-           return context.Comments.Where(c=>c.AppUserId == UID && c.ProductId==ProdID).ToList();
+           return context.Comments.Include(c => c.Replies).Where(c=>c.AppUserId == UID && c.ProductId==ProdID).ToList();
         }
 
         public void UpdateComment(Comment newComm)

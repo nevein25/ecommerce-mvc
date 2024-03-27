@@ -201,9 +201,11 @@ namespace OnlineShoppingApp.Repositories.Classes
 
         public AppUser GetProductSellerId(int prodID)
         {
-            var sellerId = Context.ProductSellers.FirstOrDefault(ps => ps.ProductId == prodID).SellerId;
+            var sellerId = Context.ProductSellers.Include(s=>s.Product).FirstOrDefault(ps => ps.ProductId == prodID).SellerId;
 
             return Context.Users.FirstOrDefault(s => s.Id == sellerId);
         }
+
+        
     }
 }

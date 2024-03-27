@@ -63,7 +63,9 @@
                                             foreach (var imge in item.Images)
                                             {
                                                 <div class="carousel-item @(index == 0 ? "active" : "")">
-                                                    <img class="w-100 h-100" src="@imge.Source" alt="Image">
+                                                 <a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">
+                                                  <img class="w-100 h-100" src="@imge.Source" alt="Image">
+                                                  </a>
                                                 </div>
                                                 index++;
                                             }
@@ -85,7 +87,13 @@
 
                         <div class="col-lg-8">
                             <div class="h-100 bg-light p-30">
-                                <h3>@item.Name</h3>
+                                <h3>
+                                    <a asp-controller="Product" asp-action="GetProduct" asp-route-id="@item.Id">
+                                    @item.Name
+                                    </a>
+                                </h3>
+                                       
+
                                 <div class="d-flex mb-3">
                                     <small class="pt-1">(@item.Comments.Count Reviews)</small>
                                 </div>

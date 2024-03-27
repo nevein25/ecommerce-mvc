@@ -7,6 +7,7 @@ namespace OnlineShoppingApp.Repositories.Interfaces
 
 
         public List<Category> GetAll();
+        public void Insert(Category category);
 
     }
 }
