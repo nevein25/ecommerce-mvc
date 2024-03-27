@@ -11,7 +11,8 @@
     List<CartItemViewModel> items = Model;
     int count = items.Count;
     var deliveryitem = 0;
-    int DeliveryMethodId = DeliveryMethodRepo.GetbyName("Free").Id;
+    int DeliveryMethodId = DeliveryMethodRepo.GetbyName("FREE").Id;
+    List<Product> products = ViewBag.Products;
 
 }
 @section Links{
@@ -59,6 +60,7 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
+                            var prod = products.FirstOrDefault(P => P.Id == item.Id);
                             <tr>
                                 <td class="image" data-title="No"><img src="@item.PictureUrl" alt="#"></td>
                                 <td class="product-des" data-title="Description">
@@ -76,7 +78,8 @@
                                         </div>
                                         <form method="post" action="@Url.Action("UpdateCart", "Cart")">
                                             <input type="hidden" name="id" value="@item.Id" />
-                                            <input type="text" name="quant[@item.Id]" class="input-number" data-min="1" data-max="100" value="@item.Quantity" onchange="this.form.submit()">
+                                            <input type="text" name="quant[@item.Id]" class="input-number" data-min="1" data-max="@prod.Quantity" value="@item.Quantity" onchange="this.form.submit()">
+                                            
                                         </form>
                                         <div class="button plus">
                                             <button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="quant[@item.Id]">

@@ -27,6 +27,7 @@ namespace OnlineShoppingApp.Controllers
         public IActionResult Index()
         {
             ViewBag.DeliveryMethods = _deliveryMethod.GetAll();
+            ViewBag.Products = _ProductRepo.GetAll();
             return View(_cartService.GetCartItems());
         }
         public IActionResult AddToCart(int id)
@@ -60,7 +61,10 @@ namespace OnlineShoppingApp.Controllers
 
                 // Process the update for the item with itemId and quantity
             }
+
             _cartService.UpdateCart(itemId, quantity);
+            //prod.Quantity -= quantity;
+            //_ProductRepo.UpdateProductQuantity(itemId, prod);
             return RedirectToAction("Index");
         }
         public IActionResult Delete(int id)
@@ -91,9 +95,9 @@ namespace OnlineShoppingApp.Controllers
                 BuyerId = User.GetUserId(),
                 Items = _cartService.GetCartItems(),
                 DeliveryMethodId = DeliveryMethodId,
-                SubTotal=_cartService.GetTotal(),
-				ShippingPrice=_deliveryMethod.GetbyId(DeliveryMethodId).DeliveryCost,
-			};
+                SubTotal = _cartService.GetTotal(),
+                ShippingPrice = _deliveryMethod.GetbyId(DeliveryMethodId).DeliveryCost,
+            };
             return RedirectToAction("Index", "Address", buyerCartData);
         }
         [HttpGet]

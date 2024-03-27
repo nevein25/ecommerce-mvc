@@ -6,5 +6,7 @@ namespace OnlineShoppingApp.Repositories.Interfaces
     {
         public void Insert(OrderItem orderItem);
         public OrderItem GetLast();
+
+        public List<OrderItem> GetAll(int orderId);
     }
 }

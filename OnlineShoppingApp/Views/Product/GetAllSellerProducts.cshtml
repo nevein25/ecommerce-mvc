@@ -1,15 +1,8 @@
 ﻿@model OnlineShoppingApp.ViewModels.ProductViewModel
 
-<!DOCTYPE html>
-<html lang="zxx">
-<!-- Header Section -->
-<head>
-    <meta charset="utf-8">
-    <title>MultiShop - Online Shop Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
 
+<!-- Header Section -->
+@section Links {
 
     <!-- Libraries Stylesheet -->
     <link href="./lib/animate/animate.min.css" rel="stylesheet">
@@ -17,37 +10,36 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="./css/style.css" rel="stylesheet">
-    @section Links{
     <style>
 
-        a.btn{
-                background: #F7941D !important;
-                color: white !important;
-        }
-        a.btn:hover{
-            background: #333 !important;
+        a.btn {
+            background: #F7941D !important;
             color: white !important;
         }
-    </style>
-    }
 
-</head>
+            a.btn:hover {
+                background: #333 !important;
+                color: white !important;
+            }
+    </style>
+}
+
 
 <body class="js">
     <div class="container-fluid pb-5 mt-2">
         <div class="row px-xl-5">
 
-           @*  <div class="col-6">
-                <h1>Products</h1>
-                <br />
-                <br />
+            @*  <div class="col-6">
+            <h1>Products</h1>
+            <br />
+            <br />
             </div> *@
 
             @* <div class="col-6 text-right">
 
-                <a asp-controller="Product" asp-action="InsertNewProduct" class="btn btn-primary">Add Product</a>
-                <br />
-                <br />
+            <a asp-controller="Product" asp-action="InsertNewProduct" class="btn btn-primary">Add Product</a>
+            <br />
+            <br />
             </div> *@
             @foreach (var item in Model?.Products)
             {
@@ -123,11 +115,13 @@
         </div>
     </div>
 
-
+@section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="./js/Delete.js"></script>
     <script src="js/main.js"></script>
+
+}
 
 </body>
 </html>
